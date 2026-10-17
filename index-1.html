@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a2463">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Uplift Calc">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Uplift Calc – by Benz</title>
+<style>
+:root{color-scheme:light dark;--bg:#eef3fb;--card:#fff;--field:#f5f8fd;--text:#0f1b33;--muted:#5d6b85;--border:#dbe3f0;--accent:#1457e6;--accent2:#00b4d8;--warn:#b54708;--good:#067647;--hero1:#0a2463;--hero2:#1478eb;--shadow:0 10px 30px rgba(15,40,100,.09)}
+@media(prefers-color-scheme:dark){:root{--bg:#0a0f1d;--card:#131b2d;--field:#0e1524;--text:#eaf0fb;--muted:#9fb0cc;--border:#26314a;--accent:#7aa7ff;--accent2:#35d0f0;--warn:#fdb022;--good:#75e0a7;--hero1:#0a2463;--hero2:#1560d6;--shadow:0 10px 30px rgba(0,0,0,.4)}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;padding:max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom));background:radial-gradient(900px 420px at 50% -120px,color-mix(in srgb,var(--accent) 22%,transparent),transparent),var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:760px;margin:auto}
+.hero{position:relative;overflow:hidden;border-radius:24px;padding:20px 20px 22px;margin-bottom:16px;color:#fff;background:linear-gradient(135deg,var(--hero1),var(--hero2));box-shadow:0 14px 34px rgba(10,36,99,.35)}
+.hero::before{content:"";position:absolute;right:-60px;top:-70px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%)}
+.hero .plane{position:absolute;right:14px;top:10px;width:96px;height:96px;fill:#fff;opacity:.16;transform:rotate(45deg)}
+.brand{position:relative;display:flex;align-items:center;gap:14px}
+.logo{flex:none;width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);display:grid;place-items:center;backdrop-filter:blur(6px)}
+.logo svg{width:32px;height:32px}
+.hero h1{margin:0;font-size:clamp(26px,7vw,34px);line-height:1.05;letter-spacing:-.5px;font-weight:800}
+.by{display:inline-block;margin-top:6px;padding:2px 10px;border-radius:99px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);font-size:12.5px;font-weight:650;letter-spacing:.6px}
+.hero p{position:relative;margin:14px 0 0;color:rgba(255,255,255,.86);font-size:14.5px;max-width:34em}
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
+h2{display:flex;align-items:center;gap:10px;font-size:18px;margin:0 0 16px;letter-spacing:-.2px}
+.step{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;font-size:14px;font-weight:750}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 12px}.field{min-width:0}.field.full{grid-column:1/-1}
+label{display:block;font-size:12.5px;font-weight:650;color:var(--muted);margin-bottom:6px;letter-spacing:.2px}
+input{width:100%;padding:13px 12px;border:1.5px solid var(--border);border-radius:12px;background:var(--field);color:var(--text);font-size:18px;font-weight:550;transition:border-color .15s,box-shadow .15s,background .15s}
+input::placeholder{color:var(--muted);font-weight:400;font-size:15px;opacity:.75}
+input:focus{outline:0;border-color:var(--accent);background:var(--card);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 20%,transparent)}
+.summary{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 14px;border-radius:14px;background:var(--field);border:1px solid var(--border);border-left:5px solid var(--accent);font-size:14px;color:var(--muted)}
+.summary strong{font-size:22px;color:var(--accent);font-weight:800;white-space:nowrap}
+.results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.result{border:1px solid var(--border);background:var(--field);border-radius:16px;padding:14px}
+.result .name{font-size:12.5px;font-weight:600;color:var(--muted)}
+.result .value{font-size:clamp(20px,5vw,27px);font-weight:800;margin-top:4px;overflow-wrap:anywhere}
+.result .unit{font-size:13px;font-weight:600;color:var(--muted)}
+.results .result:first-child{grid-column:1/-1;border:0;color:#fff;background:linear-gradient(135deg,var(--hero1),var(--hero2));box-shadow:0 10px 24px rgba(20,87,230,.3);padding:18px}
+.results .result:first-child .name,.results .result:first-child .unit{color:rgba(255,255,255,.82)}
+.results .result:first-child .value{font-size:clamp(34px,10vw,46px);letter-spacing:-1px}
+.results .result:last-child:nth-child(even){grid-column:1/-1}
+.bar{height:10px;border-radius:99px;background:var(--border);overflow:hidden;margin:16px 0 6px}.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .4s}
+.row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);font-size:14.5px}.row:last-child{border-bottom:0}.row span:first-child{color:var(--muted)}.row span:last-child{text-align:right;font-weight:700}
+.warning{color:var(--warn);font-size:14px;margin-top:10px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--warn) 12%,transparent)}
+.good{color:var(--good)}.muted{color:var(--muted);font-size:13px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+button{border:0;border-radius:12px;padding:12px 16px;font-weight:700;font-size:15px;cursor:pointer;background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;box-shadow:0 6px 16px rgba(20,87,230,.28);transition:transform .1s,opacity .15s}
+button:active{transform:scale(.97)}
+button.secondary{background:transparent;color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent)}
+button:disabled{opacity:.55;cursor:wait}
+.scan{border:1.5px dashed color-mix(in srgb,var(--accent) 55%,var(--border));background:color-mix(in srgb,var(--accent) 6%,transparent);border-radius:16px;padding:14px;margin-bottom:18px}
+.scan .t{font-weight:750;margin-bottom:10px}.scan .actions{margin-top:0}.scan input[type=file]{display:none}
+#shot{display:none;max-width:100%;max-height:180px;border-radius:12px;margin-top:12px;border:1px solid var(--border)}#scanMsg{margin-top:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.chip{display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:12px;padding:6px 8px;background:var(--card)}.chip b{font-size:18px}
+.chip select{width:auto;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font-size:15px}
+footer{color:var(--muted);font-size:12px;padding:6px 4px 22px;text-align:center}footer .sig{display:block;font-size:13.5px;font-weight:750;color:var(--text);margin-bottom:6px}footer .sig b{color:var(--accent)}
+@media(max-width:480px){body{padding-left:10px;padding-right:10px}.card{padding:15px}.grid{gap:12px 10px}.results{gap:8px}.hero{padding:18px 16px 20px}.hero .plane{width:80px;height:80px}}
+@media print{body{background:#fff;color:#111;padding:0}.hero{background:#fff;color:#111;box-shadow:none;border:1px solid #ccc}.hero p,.by{color:#333;background:none;border-color:#999}.hero .plane,.hero::before,.logo{display:none}.card{box-shadow:none;break-inside:avoid}.actions,.scan{display:none}.results .result:first-child{background:#fff;color:#111;box-shadow:none;border:1px solid #999}.results .result:first-child .name,.results .result:first-child .unit{color:#444}:root{color-scheme:light;--bg:#fff;--card:#fff;--field:#fff;--text:#111;--muted:#555;--border:#ccc;--accent:#111}}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+<svg class="plane" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+<div class="brand">
+<div class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2C12 2.2 4.8 9.9 4.8 15a7.2 7.2 0 0014.4 0C19.2 9.9 12 2.2 12 2.2z" fill="#fff"/><path d="M12 19v-6.2m0 0l-2.7 2.7m2.7-2.7l2.7 2.7" fill="none" stroke="#1457e6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div><h1>Uplift Calc</h1><span class="by">by Benz</span></div>
+</div>
+<p>Tính khối lượng dầu cần nạp, quy đổi thể tích và đối chiếu khối lượng riêng tại 15°C.</p>
+</header>
+<section class="card">
+<h2><span class="step">1</span>Nhập thông số</h2>
+<div class="scan">
+<div class="t">📷 Chụp đồng hồ tàu bay để tự điền</div>
+<div class="actions"><button type="button" id="camBtn">📷 Chụp ảnh</button><button type="button" id="picBtn" class="secondary">🖼 Chọn ảnh</button></div>
+<input id="camIn" type="file" accept="image/*" capture="environment"><input id="picIn" type="file" accept="image/*">
+<img id="shot" alt="Ảnh đồng hồ vừa chụp">
+<div id="scanMsg" class="muted">Chụp thẳng, đủ sáng, thấy rõ cả ô LEFT / CTR / RIGHT và PRESELECTED. Bảng đèn LED xanh được đọc ngay trên máy, không cần mạng. Loại đồng hồ khác sẽ dùng bộ nhận dạng chữ (lần đầu cần mạng).</div>
+<div id="chips" class="chips"></div>
+</div>
+<div class="grid">
+<div class="field"><label for="L">Cánh trái (kg)</label><input id="L" type="number" min="0" step="any" inputmode="decimal" placeholder="Nhập kg"></div>
+<div class="field"><label for="R">Cánh phải (kg)</label><input id="R" type="number" min="0" step="any" inputmode="decimal" placeholder="Nhập kg"></div>
+<div class="field full"><div class="summary">Tổng hiện có ở hai cánh: <strong id="sum">— kg</strong></div></div>
+<div class="field full"><label for="G">Tổng khối lượng sau khi cài (kg)</label><input id="G" type="number" min="0" step="any" inputmode="decimal" placeholder="Nhập tổng mục tiêu"></div>
+<div class="field"><label for="D">Tỉ trọng hiện tại (kg/L)</label><input id="D" type="number" min="0.0001" step="0.0001" value="0.8000" inputmode="decimal"></div>
+<div class="field"><label for="C">Nhiệt độ nhiên liệu (°C)</label><input id="C" type="number" step="0.1" inputmode="decimal" placeholder="Ví dụ: 30"></div>
+<div class="field full"><label for="K">KLR ghi trên Chứng nhận xuất hàng bể chứa tại 15°C (kg/m³) — tùy chọn</label><input id="K" type="number" step="0.1" inputmode="decimal" placeholder="Ví dụ: 811.0"></div>
+</div>
+<div class="actions"><button type="button" id="reset" class="secondary">Xóa số liệu tính</button><button type="button" id="print">In kết quả</button></div>
+<p class="muted" id="keepNote">Tỉ trọng, nhiệt độ và KLR trên Chứng nhận xuất hàng bể chứa tự động được lưu trên thiết bị này để dùng cho lần sau.</p>
+</section>
+<section class="card">
+<h2><span class="step">2</span>Kết quả tính toán</h2>
+<div id="message" class="muted">Nhập cánh trái, cánh phải và tổng mục tiêu để xem kết quả.</div>
+<div id="out"></div>
+</section>
+<footer><span class="sig">✈ Uplift Calc · by <b>Benz</b></span>Chỉ dùng để tham khảo và hỗ trợ tính toán. Luôn đối chiếu đồng hồ xe tra nạp, chứng từ giao nhận và quy trình vận hành được phê duyệt. Kết quả quy đổi d15 áp dụng công thức Bảng 53B được tích hợp trong công cụ; cần xác minh theo quy trình/tiêu chuẩn hiện hành trước khi sử dụng nghiệp vụ.</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const fmt=(v,d=0)=>Number.isFinite(v)?v.toLocaleString('vi-VN',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
+function k53(r){if(r>=838.3127)return[186.9696,0.4862,0];if(r>=787.5)return[594.5418,0,0];if(r>=770.352)return[2680.3206,0,-0.00336312];return[346.4228,0.4388,0]}
+function t53b(ro,t){let r=ro;for(let i=0;i<100;i++){const[a,b,c]=k53(r),al=a/(r*r)+b/r+c,dt=t-15,v=Math.exp(-al*dt*(1+0.8*al*dt)),n=ro/v;const done=Math.abs(n-r)<1e-7;r=n;if(done)break}return Math.round(r*10)/10}
+function result(label,value,unit=''){return `<div class="result"><div class="name">${label}</div><div class="value">${value} <span class="unit">${unit}</span></div></div>`}
+function calc(){
+ const L=$('L').value,R=$('R').value,G=$('G').value,d=Number($('D').value),temp=$('C').value,K=$('K').value;
+ const hasL=L!==''&&Number.isFinite(Number(L)),hasR=R!==''&&Number.isFinite(Number(R));
+ const cur=(hasL?Number(L):0)+(hasR?Number(R):0);
+ $('sum').textContent=(hasL||hasR)?fmt(cur)+' kg':'— kg';
+ if(!hasL||!hasR||G===''||!(d>0)){
+  $('message').textContent='Vui lòng nhập cánh trái, cánh phải, tổng mục tiêu và tỉ trọng hợp lệ.';
+  $('out').innerHTML='';return;
+ }
+ const target=Number(G),need=target-cur,lit=need/d,gal=lit/3.785411784;
+ let d15=d*1000;
+ if(temp!=='')d15=t53b(d*1000,Number(temp));
+ const lit15=need/(d15/1000),ok=d15>=775&&d15<=840;
+ let html='<div class="results">'+result('Khối lượng cần nạp',fmt(need),'kg')+result('Thể tích theo tỉ trọng nhập',fmt(lit),'L')+result('US gallon',fmt(gal),'gal')+result('Khối lượng hiện có',fmt(cur),'kg')+'</div>';
+ const pct=target>0?Math.max(0,Math.min(100,cur/target*100)):0;
+ html+='<div class="bar"><i style="width:'+pct.toFixed(1)+'%"></i></div><div class="muted">Hiện có '+fmt(pct,0)+'% so với tổng mục tiêu</div>';
+ html+='<div style="margin-top:12px"><div class="row"><span>d15 theo Bảng 53B</span><span>'+(temp!==''?fmt(d15,1)+' kg/m³':'Nhập nhiệt độ để quy đổi')+'</span></div>';
+ if(temp!=='')html+='<div class="row"><span>Đối chiếu d15 với dải 775,0–840,0 kg/m³</span><span class="'+(ok?'good':'warning')+'">'+(ok?'Trong dải':'Ngoài dải')+'</span></div>';
+ if(K!==''){const diff=d15-Number(K);html+='<div class="row"><span>d15 − KLR trên Chứng nhận xuất hàng bể chứa</span><span class="'+(Math.abs(diff)>3?'warning':'good')+'">'+(diff>0?'+':'')+fmt(diff,1)+' kg/m³ '+(Math.abs(diff)>3?'⚠ Lệch quá 3':'✓ Trong 3')+'</span></div>'}
+ if(temp!==''){html+='<div class="row"><span>Thể tích quy đổi tại 15°C</span><span>'+fmt(lit15)+' L</span></div><div class="row"><span>US gallon tại 15°C</span><span>'+fmt(lit15/3.785411784)+' gal</span></div>'}
+ html+='</div>';
+ if(need<0)html+='<p class="warning">⚠ Tổng mục tiêu thấp hơn khối lượng hiện có. Cần kiểm tra lại số liệu cài đặt.</p>';
+ if(K!==''&&Math.abs(d15-Number(K))>3)html+='<p class="warning">⚠ d15 lệch KLR ghi trên Chứng nhận xuất hàng bể chứa quá 3 kg/m³. Kiểm tra tỉ trọng, nhiệt độ và chứng từ.</p>';
+ if(temp!==''&&(d15<653||d15>1075||Number(temp)<-18||Number(temp)>90))html+='<p class="warning">⚠ Ngoài dải áp dụng nêu trong công thức Bảng 53B; kết quả d15 có thể không đáng tin cậy.</p>';
+ $('message').textContent='Kết quả được cập nhật tự động khi thay đổi số liệu.';
+ $('out').innerHTML=html;
+}
+
+const KEEP=['D','C','K'],had={};
+function idb(op,key,val){return new Promise(ok=>{try{const r=indexedDB.open('uplift-calc',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onerror=()=>ok(null);r.onsuccess=()=>{try{const t=r.result.transaction('kv',op==='get'?'readonly':'readwrite'),st=t.objectStore('kv'),q=op==='get'?st.get(key):st.put(val,key);q.onsuccess=()=>ok(q.result);q.onerror=()=>ok(null)}catch(e){ok(null)}}}catch(e){ok(null)}})}
+function keepSave(){
+ const o={};KEEP.forEach(id=>o[id]=$(id).value);
+ KEEP.forEach(id=>{try{localStorage.setItem('fuelapp.'+id,o[id])}catch(e){}});
+ idb('put','keep',JSON.stringify(o));
+ const n=$('keepNote');if(n)n.textContent='✓ Đã lưu tỉ trọng, nhiệt độ và KLR trên thiết bị này cho lần sau.';
+}
+KEEP.forEach(id=>{try{const v=localStorage.getItem('fuelapp.'+id);if(v!==null){$(id).value=v;had[id]=true}}catch(e){}});
+idb('get','keep').then(v=>{try{if(!v)return;const o=JSON.parse(v);let ch=false;KEEP.forEach(id=>{if(!had[id]&&o[id]){$(id).value=o[id];ch=true}});if(ch)calc()}catch(e){}});
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+['L','R','G','D','C','K'].forEach(id=>{
+ $(id).addEventListener('input',()=>{if(KEEP.includes(id))keepSave();calc()});
+ $(id).addEventListener('change',()=>{if(KEEP.includes(id))keepSave()});
+});
+addEventListener('pagehide',keepSave);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')keepSave()});
+$('reset').addEventListener('click',()=>{['L','R','G'].forEach(id=>$(id).value='');calc()});
+$('print').addEventListener('click',()=>window.print());
+calc();
+
+/*SCAN-PURE-START*/
+function parseReading(t){
+ const raw=String(t).trim();
+ if((raw.match(/\d/g)||[]).length<2)return null;
+ let x=raw.replace(/[^0-9.,]/g,'').replace(/^[.,]+|[.,]+$/g,'');
+ if(/^\d{1,3}([.,]\d{3})+$/.test(x))x=x.replace(/[.,]/g,'');
+ else if(/^\d+[.,]\d+$/.test(x))x=x.replace(',','.');
+ else if(!/^\d+$/.test(x))return null;
+ let v=Number(x);
+ if(/[.]/.test(x)&&v<100)v=Math.round(v*1000);
+ return(Number.isFinite(v)&&v>=10&&v<=200000)?v:null;
+}
+function toItems(words){
+ const out=[];
+ (words||[]).forEach(w=>{const v=parseReading(w.text);if(v===null||!w.bbox)return;
+  out.push({v,cx:(w.bbox.x0+w.bbox.x1)/2,cy:(w.bbox.y0+w.bbox.y1)/2,conf:w.confidence||0})});
+ return out.sort((a,b)=>b.conf-a.conf).slice(0,8);
+}
+function assignReadings(items,imgW){
+ const out={L:null,R:null,G:null};
+ const pos=(a,b)=>Math.abs(a.cx-b.cx)>imgW*0.12?a.cx-b.cx:a.cy-b.cy;
+ const pair=(a,b)=>pos(a,b)<=0?[a,b]:[b,a];
+ if(items.length>=3){
+  let best=null;
+  for(let i=0;i<items.length;i++)for(let j=i+1;j<items.length;j++)for(let k=0;k<items.length;k++){
+   if(k===i||k===j)continue;
+   const t=items[k],err=Math.abs(items[i].v+items[j].v-t.v);
+   if(err<=Math.max(2,0.01*t.v)&&(!best||err<best.err))best={a:items[i],b:items[j],t,err};
+  }
+  if(best){const[l,r]=pair(best.a,best.b);out.L=l;out.R=r;out.G=best.t;return out}
+  const top=items.slice(0,3).sort((a,b)=>b.v-a.v);
+  out.G=top[0];const[l,r]=pair(top[1],top[2]);out.L=l;out.R=r;return out;
+ }
+ if(items.length===2){const[l,r]=pair(items[0],items[1]);out.L=l;out.R=r}
+ return out;
+}
+/*SCAN-PURE-END*/
+/*LED-START*/
+function ledDilate(m,w,h,r){
+ const t=new Uint8Array(w*h),o=new Uint8Array(w*h),pre=new Int32Array(Math.max(w,h)+1);
+ for(let y=0;y<w*h;y+=w){pre[0]=0;for(let x=0;x<w;x++)pre[x+1]=pre[x]+m[y+x];
+  for(let x=0;x<w;x++){const a=Math.max(0,x-r),b=Math.min(w,x+r+1);t[y+x]=pre[b]-pre[a]>0?1:0}}
+ for(let x=0;x<w;x++){pre[0]=0;for(let y=0;y<h;y++)pre[y+1]=pre[y]+t[y*w+x];
+  for(let y=0;y<h;y++){const a=Math.max(0,y-r),b=Math.min(h,y+r+1);o[y*w+x]=pre[b]-pre[a]>0?1:0}}
+ return o;
+}
+function ledLabel(b,w,h){
+ const lab=new Int32Array(w*h),st=[];let n=0;
+ for(let i=0;i<w*h;i++){if(!b[i]||lab[i])continue;n++;lab[i]=n;st.push(i);
+  while(st.length){const j=st.pop(),x=j%w,y=(j-x)/w;
+   for(let dy=-1;dy<=1;dy++){const yy=y+dy;if(yy<0||yy>=h)continue;
+    for(let dx=-1;dx<=1;dx++){const xx=x+dx;if(xx<0||xx>=w)continue;const k=yy*w+xx;if(b[k]&&!lab[k]){lab[k]=n;st.push(k)}}}}}
+ return{lab,n};
+}
+const LED_SEG={abcdef:'0',bc:'1',abdeg:'2',abcdg:'3',bcfg:'4',acdfg:'5',acdefg:'6',abc:'7',abcdefg:'8',abcdfg:'9'};
+const LED_RECT={a:[.12,.88,0,.22],g:[.12,.88,.39,.61],d:[.12,.88,.78,1],f:[0,.32,.08,.52],b:[.68,1,.08,.52],e:[0,.32,.48,.92],c:[.68,1,.48,.92]};
+function ledGlyph(pts,gx0,gx1,y0,y1){
+ const w=gx1-gx0+1,h=y1-y0+1;
+ if(w<0.4*h)return '1';
+ const fill={};let mx=0;
+ for(const s in LED_RECT){
+  const[ax,bx,ay,by]=LED_RECT[s],X0=gx0+ax*w,X1=gx0+bx*w,Y0=y0+ay*h,Y1=y0+by*h;
+  let c=0;for(const p of pts)if(p[0]>=X0&&p[0]<=X1&&p[1]>=Y0&&p[1]<=Y1)c++;
+  fill[s]=c/Math.max(1,(X1-X0)*(Y1-Y0));if(fill[s]>mx)mx=fill[s];
+ }
+ const thr=Math.max(0.1,0.5*mx);let on='';
+ for(const s of 'abcdefg')if(fill[s]>=thr)on+=s;
+ let best=null,bd=9;
+ for(const k in LED_SEG){let d=0;for(const s of 'abcdefg')if((k.includes(s))!==(on.includes(s)))d++;if(d<bd){bd=d;best=k}}
+ return bd<=1?LED_SEG[best]:null;
+}
+function ledPoints(d,w,h,lab,id,b0,r,f){
+ const pix=[],gs=[];
+ for(let y=Math.max(0,b0.y0-r);y<=Math.min(h-1,b0.y1+r);y++)for(let x=Math.max(0,b0.x0-r);x<=Math.min(w-1,b0.x1+r);x++){
+  const i=y*w+x;if(lab[i]===id){pix.push(i);gs.push(d[i*4+1])}}
+ gs.sort((p,q)=>p-q);
+ const T=f*gs[Math.floor(gs.length*0.99)];
+ const pts=[];let x0=1e9,x1=-1,y0=1e9,y1=-1;
+ for(const i of pix){if(d[i*4+1]<T)continue;const x=i%w,y=(i-x)/w;pts.push([x,y]);
+  if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+ if(pts.length<20)return null;
+ const rc=new Int32Array(h);for(const p of pts)rc[p[1]]++;
+ let rm=0;for(let y=y0;y<=y1;y++)if(rc[y]>rm)rm=rc[y];
+ const ok=(y)=>{for(let k=0;k<4;k++)if(rc[y+k]<0.2*rm)return false;return true};
+ let ry0=y0,ry1=y1;while(ry0<y1-4&&!ok(ry0))ry0++;while(ry1>ry0+4&&!ok(ry1-3))ry1--;
+ return{pts:pts.filter(p=>p[1]>=ry0&&p[1]<=ry1),x0,x1,y0:ry0,y1:ry1};
+}
+function ledShearScore(P,s){
+ const bh=P.y1-P.y0+1,yc=(P.y0+P.y1)/2,off=Math.ceil(0.7*bh)+4,len=(P.x1-P.x0+1)+2*off+4,cnt=new Int32Array(len);
+ for(const p of P.pts)cnt[Math.round(p[0]-P.x0+s*(p[1]-yc))+off]++;
+ let sc=0;for(let i=0;i<len;i++)sc+=cnt[i]*cnt[i];
+ return sc/(P.pts.length*P.pts.length);
+}
+function ledRead(P,bs){
+ const bb=P,bh=bb.y1-bb.y0+1,yc=(bb.y0+bb.y1)/2,pts=P.pts;
+ const sp=pts.map(p=>[p[0]+bs*(p[1]-yc),p[1]]);
+ const upper=sp.filter(p=>p[1]<=bb.y0+0.72*bh),lower=sp.filter(p=>p[1]>bb.y0+0.72*bh);
+ let minx=1e9,maxx=-1e9;for(const p of sp){if(p[0]<minx)minx=p[0];if(p[0]>maxx)maxx=p[0]}
+ const L=Math.ceil(maxx-minx)+3,cnt=new Int32Array(L);
+ for(const p of upper)cnt[Math.floor(p[0]-minx)]++;
+ const gap=Math.max(2,0.08*bh),runs=[];let cur=null;
+ for(let i=0;i<L;i++){if(!cnt[i])continue;
+  if(cur&&i-cur.e<=gap){cur.e=i;cur.n+=cnt[i]}else{cur={s:i,e:i,n:cnt[i]};runs.push(cur)}}
+ const g=runs.filter(r=>r.n>=Math.max(6,0.02*upper.length)).map(r=>({x0:r.s+minx,x1:r.e+minx}));
+ if(!g.length||g.length>5)return null;
+ const inRange=x=>g.some(r=>x>=r.x0-0.5&&x<=r.x1+0.5);
+ let dotAfter=-1;
+ const dots=lower.filter(p=>!inRange(p[0]));
+ if(dots.length>=3){
+  const mx=dots.reduce((a,p)=>a+p[0],0)/dots.length;
+  for(let k=0;k<g.length-1;k++)if(mx>g[k].x1&&mx<g[k+1].x0)dotAfter=k;
+ }
+ let digits='';
+ for(const r of g){
+  const dp=sp.filter(p=>p[0]>=r.x0-0.5&&p[0]<=r.x1+0.5);
+  const ch=ledGlyph(dp,r.x0,r.x1,bb.y0,bb.y1);
+  if(ch===null)return null;digits+=ch;
+ }
+ return{digits,dotAfter,cx:(bb.x0+bb.x1)/2,cy:yc,h:bh};
+}
+function ledScan(d,w,h){
+ const N=w*h,m=new Uint8Array(N),M=Math.max(w,h);
+ for(let i=0,p=0;i<N;i++,p+=4){const r=d[p],g=d[p+1],b=d[p+2];if(g>85&&g-(r>b?r:b)>30)m[i]=1}
+ const rad=Math.max(3,Math.round(M*0.007));
+ const{lab,n}=ledLabel(ledDilate(m,w,h,rad),w,h);
+ const bbs=new Array(n+1).fill(null);
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x;if(!m[i])continue;const l=lab[i];let b=bbs[l];
+  if(!b)b=bbs[l]={x0:x,x1:x,y0:y,y1:y,n:0};
+  if(x<b.x0)b.x0=x;if(x>b.x1)b.x1=x;if(y<b.y0)b.y0=y;if(y>b.y1)b.y1=y;b.n++}
+ const ids=[];
+ for(let id=1;id<=n;id++){const b=bbs[id];if(!b||b.n<40)continue;
+  const bw=b.x1-b.x0+1,bh=b.y1-b.y0+1;
+  if(bh<0.008*M||bh>0.09*M||bw/bh<0.6||bw/bh>9)continue;ids.push(id)}
+ if(ids.length<2)return{items:[],warn:''};
+ // đọc nhiều lần với ngưỡng sáng và độ nghiêng khác nhau rồi bỏ phiếu
+ const votes={},pos={};
+ for(const f of [0.8,0.88,0.95]){
+  const Ps=ids.map(id=>({id,P:ledPoints(d,w,h,lab,id,bbs[id],rad,f)})).filter(o=>o.P);
+  let bs=0,bsc=-1;
+  for(let s=-0.5;s<=0.5001;s+=0.025){let sc=0;for(const o of Ps)sc+=ledShearScore(o.P,s);if(sc>bsc){bsc=sc;bs=s}}
+  for(const o of Ps)for(const ds of [-0.05,0,0.05]){
+   const rd=ledRead(o.P,bs+ds);if(!rd)continue;
+   const key=rd.digits+'|'+rd.dotAfter;(votes[o.id]=votes[o.id]||{})[key]=(votes[o.id][key]||0)+1;
+   pos[o.id]={cx:rd.cx,cy:rd.cy,h:rd.h};
+  }
+ }
+ const disp=[];
+ for(const id of ids){
+  const v=votes[id];if(!v)continue;
+  let best=null,bc=0,tot=0;for(const k in v){tot+=v[k];if(v[k]>bc){bc=v[k];best=k}}
+  if(bc<3)continue;
+  const[digits,da]=best.split('|');disp.push({digits,dotAfter:Number(da),cx:pos[id].cx,cy:pos[id].cy,h:pos[id].h});
+ }
+ if(disp.length<2)return{items:[],warn:''};
+ disp.sort((a,b)=>a.cy-b.cy);
+ const rows=[];
+ for(const q of disp){const row=rows[rows.length-1];
+  if(row&&Math.abs(q.cy-row[0].cy)<0.6*q.h)row.push(q);else rows.push([q])}
+ rows.forEach(r=>r.sort((a,b)=>a.cx-b.cx));
+ const tank=rows.find(r=>r.length===3);
+ if(!tank)return{items:[],warn:''};
+ const refuel=rows.find(r=>r.length===2&&r[0].cy>tank[0].cy);
+ const val=(q,isTank)=>{
+  const s=q.digits;let k=q.dotAfter;
+  if(k<0)k=isTank?0:s.length-2;
+  if(k<0||k>=s.length-1)return null;
+  return Math.round(Number(s.slice(0,k+1)+'.'+s.slice(k+1))*1000);
+ };
+ const items=[];
+ const add=(q,tag,isTank)=>{const v=val(q,isTank);if(v!==null)items.push({v,tag,cx:q.cx,cy:q.cy,conf:99});return v};
+ const L=add(tank[0],'L',true),C=add(tank[1],'CTR',true),R=add(tank[2],'R',true);
+ let P=null,A=null;
+ if(refuel){P=add(refuel[0],'PRE',false);A=add(refuel[1],'ACT',false)}
+ let warn='';
+ if(A!==null&&L!==null&&C!==null&&R!==null&&Math.abs(L+C+R-A)>120)warn='Tổng ba bình ('+(L+C+R)+' kg) không khớp số ACTUAL ('+A+' kg): có thể đọc sai, hãy chụp lại hoặc kiểm tra tay.';
+ return{items,warn};
+}
+/*LED-END*/
+const SCAN={busy:false,items:[],assign:{L:null,R:null,G:null}};
+const ROLE={L:'Trái',R:'Phải',G:'Tổng'};
+const TAGN={L:'Trái',CTR:'Giữa',R:'Phải',PRE:'Cài sẵn',ACT:'Thực tế'};
+function setField(id,v){$(id).value=String(v);$(id).dispatchEvent(new Event('input',{bubbles:true}))}
+function scanMsg(t){$('scanMsg').textContent=t}
+let tessWorker=null;
+function loadTess(){
+ if(window.Tesseract)return Promise.resolve();
+ return new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';s.onload=ok;s.onerror=()=>no(new Error('load'));document.head.appendChild(s)});
+}
+async function getWorker(){
+ if(tessWorker)return tessWorker;
+ scanMsg('Đang tải bộ nhận dạng số (lần đầu cần mạng)…');
+ await loadTess();
+ const w=await Tesseract.createWorker('eng',1,{logger:m=>{if(m.status==='recognizing text'&&typeof m.progress==='number')scanMsg('Đang đọc số… '+Math.round(m.progress*100)+'%')}});
+ await w.setParameters({tessedit_char_whitelist:'0123456789.,',tessedit_pageseg_mode:Tesseract.PSM.SPARSE_TEXT});
+ tessWorker=w;return w;
+}
+async function fileToCanvas(file){
+ let bmp;
+ try{bmp=await createImageBitmap(file,{imageOrientation:'from-image'})}
+ catch(e){bmp=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=URL.createObjectURL(file)})}
+ const w0=bmp.width||bmp.naturalWidth,h0=bmp.height||bmp.naturalHeight,sc=Math.min(1,1800/Math.max(w0,h0));
+ const c=document.createElement('canvas');c.width=Math.round(w0*sc);c.height=Math.round(h0*sc);
+ c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);return c;
+}
+function prep(src,invert){
+ const c=document.createElement('canvas');c.width=src.width;c.height=src.height;
+ const x=c.getContext('2d');x.drawImage(src,0,0);
+ const im=x.getImageData(0,0,c.width,c.height),d=im.data,n=c.width*c.height,hist=new Uint32Array(256);
+ for(let i=0;i<n;i++){const g=(d[i*4]*0.299+d[i*4+1]*0.587+d[i*4+2]*0.114)|0;d[i*4]=g;hist[g]++}
+ let lo=0,hi=255,a=0;
+ while(lo<255&&(a+=hist[lo])<n*0.02)lo++;a=0;while(hi>0&&(a+=hist[hi])<n*0.02)hi--;
+ if(hi-lo<30){lo=0;hi=255}
+ const k=255/(hi-lo);
+ for(let i=0;i<n;i++){let g=(d[i*4]-lo)*k;g=g<0?0:g>255?255:g;if(invert)g=255-g;d[i*4]=d[i*4+1]=d[i*4+2]=g;d[i*4+3]=255}
+ x.putImageData(im,0,0);return c;
+}
+function renderChips(){
+ const box=$('chips');box.innerHTML='';
+ SCAN.items.forEach((it,idx)=>{
+  const role=Object.keys(SCAN.assign).find(r=>SCAN.assign[r]===it)||'';
+  const chip=document.createElement('div');chip.className='chip';
+  chip.innerHTML='<b>'+fmt(it.v,Number.isInteger(it.v)?0:1)+'</b>'+(it.tag?'<span class="muted">'+TAGN[it.tag]+'</span>':'');
+  const sel=document.createElement('select');
+  [['','—'],['L','Trái'],['R','Phải'],['G','Tổng']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;if(v===role)o.selected=true;sel.appendChild(o)});
+  sel.addEventListener('change',()=>{
+   Object.keys(SCAN.assign).forEach(r=>{if(SCAN.assign[r]===it)SCAN.assign[r]=null});
+   if(sel.value){SCAN.assign[sel.value]=it;setField(sel.value,it.v)}
+   renderChips();
+  });
+  chip.appendChild(sel);box.appendChild(chip);
+ });
+}
+async function scanFile(file){
+ if(!file||SCAN.busy)return;
+ SCAN.busy=true;['camBtn','picBtn'].forEach(id=>$(id).disabled=true);
+ $('chips').innerHTML='';
+ try{
+  const shot=$('shot');shot.src=URL.createObjectURL(file);shot.style.display='block';
+  scanMsg('Đang xử lý ảnh…');
+  const src=await fileToCanvas(file);
+  const led=ledScan(src.getContext('2d').getImageData(0,0,src.width,src.height).data,src.width,src.height);
+  const lt=t=>led.items.find(i=>i.tag===t);
+  if(lt('L')&&lt('R')){
+   SCAN.items=led.items;SCAN.assign={L:lt('L'),R:lt('R'),G:lt('PRE')||null};
+   const got=[];
+   ['L','R','G'].forEach(r=>{const it=SCAN.assign[r];if(it){setField(r,it.v);got.push(ROLE[r]+' '+fmt(it.v))}});
+   let msg='Đã đọc bảng FUEL QTY: '+got.join(' · ')+(SCAN.assign.G?' (Tổng = số PRESELECTED).':'.')+' Hãy đối chiếu với đồng hồ.';
+   if(lt('CTR')&&lt('CTR').v>0)msg+=' ⚠ Bình giữa (CTR) đang có '+fmt(lt('CTR').v)+' kg, chưa được tính vào tổng hiện có.';
+   if(led.warn)msg+=' ⚠ '+led.warn;
+   scanMsg(msg);renderChips();return;
+  }
+  const w=await getWorker();
+  let best=[];
+  for(const inv of [false,true]){
+   const r=await w.recognize(prep(src,inv));
+   const items=toItems(r.data&&r.data.words);
+   if(items.length>best.length)best=items;
+   if(best.length>=3)break;
+  }
+  SCAN.items=best;SCAN.assign=assignReadings(best,src.width);
+  if(!best.length){scanMsg('Không đọc được số nào. Hãy chụp gần hơn, đủ sáng, tránh lóa rồi thử lại, hoặc nhập tay.');return}
+  const got=[];
+  ['L','R','G'].forEach(r=>{const it=SCAN.assign[r];if(it){setField(r,it.v);got.push(ROLE[r]+' '+fmt(it.v,Number.isInteger(it.v)?0:1))}});
+  scanMsg((got.length?'Đã điền: '+got.join(' · ')+'. ':'')+'Hãy đối chiếu với đồng hồ; nếu sai, đổi vai trò từng số bên dưới.');
+  renderChips();
+ }catch(e){
+  scanMsg('Chưa quét được (có thể do chưa có mạng ở lần đầu hoặc ảnh lỗi). Bạn vẫn có thể nhập tay.');
+ }finally{SCAN.busy=false;['camBtn','picBtn'].forEach(id=>$(id).disabled=false)}
+}
+$('camBtn').addEventListener('click',()=>$('camIn').click());
+$('picBtn').addEventListener('click',()=>$('picIn').click());
+['camIn','picIn'].forEach(id=>$(id).addEventListener('change',e=>{scanFile(e.target.files[0]);e.target.value=''}));
+</script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+</script>
+</body>
+</html>
