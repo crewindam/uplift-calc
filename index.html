@@ -9,8 +9,8 @@
 <meta name="apple-mobile-web-app-title" content="Uplift Calc">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Uplift Calc – by Benz</title>
 <style>
 :root{color-scheme:light dark;--bg:#eef3fb;--card:#fff;--field:#f5f8fd;--text:#0f1b33;--muted:#5d6b85;--border:#dbe3f0;--accent:#1457e6;--accent2:#00b4d8;--warn:#b54708;--good:#067647;--hero1:#0a2463;--hero2:#1478eb;--shadow:0 10px 30px rgba(15,40,100,.09)}
@@ -82,7 +82,7 @@ footer{color:var(--muted);font-size:12px;padding:6px 4px 22px;text-align:center}
 <div class="actions"><button type="button" id="camBtn">📷 Chụp ảnh</button><button type="button" id="picBtn" class="secondary">🖼 Chọn ảnh</button></div>
 <input id="camIn" type="file" accept="image/*" capture="environment"><input id="picIn" type="file" accept="image/*">
 <img id="shot" alt="Ảnh đồng hồ vừa chụp">
-<div id="scanMsg" class="muted">Chụp gần, đủ sáng, tránh lóa; giữ cả số cánh trái, cánh phải và tổng trong khung. Lần quét đầu cần có mạng để tải bộ nhận dạng.</div>
+<div id="scanMsg" class="muted">Chụp thẳng, đủ sáng, thấy rõ cả ô LEFT / CTR / RIGHT và PRESELECTED. Bảng đèn LED xanh được đọc ngay trên máy, không cần mạng. Loại đồng hồ khác sẽ dùng bộ nhận dạng chữ (lần đầu cần mạng).</div>
 <div id="chips" class="chips"></div>
 </div>
 <div class="grid">
@@ -151,7 +151,8 @@ function parseReading(t){
  if(/^\d{1,3}([.,]\d{3})+$/.test(x))x=x.replace(/[.,]/g,'');
  else if(/^\d+[.,]\d+$/.test(x))x=x.replace(',','.');
  else if(!/^\d+$/.test(x))return null;
- const v=Number(x);
+ let v=Number(x);
+ if(/[.]/.test(x)&&v<100)v=Math.round(v*1000);
  return(Number.isFinite(v)&&v>=10&&v<=200000)?v:null;
 }
 function toItems(words){
@@ -179,8 +180,150 @@ function assignReadings(items,imgW){
  return out;
 }
 /*SCAN-PURE-END*/
+/*LED-START*/
+function ledDilate(m,w,h,r){
+ const t=new Uint8Array(w*h),o=new Uint8Array(w*h),pre=new Int32Array(Math.max(w,h)+1);
+ for(let y=0;y<w*h;y+=w){pre[0]=0;for(let x=0;x<w;x++)pre[x+1]=pre[x]+m[y+x];
+  for(let x=0;x<w;x++){const a=Math.max(0,x-r),b=Math.min(w,x+r+1);t[y+x]=pre[b]-pre[a]>0?1:0}}
+ for(let x=0;x<w;x++){pre[0]=0;for(let y=0;y<h;y++)pre[y+1]=pre[y]+t[y*w+x];
+  for(let y=0;y<h;y++){const a=Math.max(0,y-r),b=Math.min(h,y+r+1);o[y*w+x]=pre[b]-pre[a]>0?1:0}}
+ return o;
+}
+function ledLabel(b,w,h){
+ const lab=new Int32Array(w*h),st=[];let n=0;
+ for(let i=0;i<w*h;i++){if(!b[i]||lab[i])continue;n++;lab[i]=n;st.push(i);
+  while(st.length){const j=st.pop(),x=j%w,y=(j-x)/w;
+   for(let dy=-1;dy<=1;dy++){const yy=y+dy;if(yy<0||yy>=h)continue;
+    for(let dx=-1;dx<=1;dx++){const xx=x+dx;if(xx<0||xx>=w)continue;const k=yy*w+xx;if(b[k]&&!lab[k]){lab[k]=n;st.push(k)}}}}}
+ return{lab,n};
+}
+const LED_SEG={abcdef:'0',bc:'1',abdeg:'2',abcdg:'3',bcfg:'4',acdfg:'5',acdefg:'6',abc:'7',abcdefg:'8',abcdfg:'9'};
+const LED_RECT={a:[.12,.88,0,.22],g:[.12,.88,.39,.61],d:[.12,.88,.78,1],f:[0,.32,.08,.52],b:[.68,1,.08,.52],e:[0,.32,.48,.92],c:[.68,1,.48,.92]};
+function ledGlyph(pts,gx0,gx1,y0,y1){
+ const w=gx1-gx0+1,h=y1-y0+1;
+ if(w<0.4*h)return '1';
+ const fill={};let mx=0;
+ for(const s in LED_RECT){
+  const[ax,bx,ay,by]=LED_RECT[s],X0=gx0+ax*w,X1=gx0+bx*w,Y0=y0+ay*h,Y1=y0+by*h;
+  let c=0;for(const p of pts)if(p[0]>=X0&&p[0]<=X1&&p[1]>=Y0&&p[1]<=Y1)c++;
+  fill[s]=c/Math.max(1,(X1-X0)*(Y1-Y0));if(fill[s]>mx)mx=fill[s];
+ }
+ const thr=Math.max(0.1,0.5*mx);let on='';
+ for(const s of 'abcdefg')if(fill[s]>=thr)on+=s;
+ let best=null,bd=9;
+ for(const k in LED_SEG){let d=0;for(const s of 'abcdefg')if((k.includes(s))!==(on.includes(s)))d++;if(d<bd){bd=d;best=k}}
+ return bd<=1?LED_SEG[best]:null;
+}
+function ledPoints(d,w,h,lab,id,b0,r,f){
+ const pix=[],gs=[];
+ for(let y=Math.max(0,b0.y0-r);y<=Math.min(h-1,b0.y1+r);y++)for(let x=Math.max(0,b0.x0-r);x<=Math.min(w-1,b0.x1+r);x++){
+  const i=y*w+x;if(lab[i]===id){pix.push(i);gs.push(d[i*4+1])}}
+ gs.sort((p,q)=>p-q);
+ const T=f*gs[Math.floor(gs.length*0.99)];
+ const pts=[];let x0=1e9,x1=-1,y0=1e9,y1=-1;
+ for(const i of pix){if(d[i*4+1]<T)continue;const x=i%w,y=(i-x)/w;pts.push([x,y]);
+  if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+ if(pts.length<20)return null;
+ const rc=new Int32Array(h);for(const p of pts)rc[p[1]]++;
+ let rm=0;for(let y=y0;y<=y1;y++)if(rc[y]>rm)rm=rc[y];
+ const ok=(y)=>{for(let k=0;k<4;k++)if(rc[y+k]<0.2*rm)return false;return true};
+ let ry0=y0,ry1=y1;while(ry0<y1-4&&!ok(ry0))ry0++;while(ry1>ry0+4&&!ok(ry1-3))ry1--;
+ return{pts:pts.filter(p=>p[1]>=ry0&&p[1]<=ry1),x0,x1,y0:ry0,y1:ry1};
+}
+function ledShearScore(P,s){
+ const bh=P.y1-P.y0+1,yc=(P.y0+P.y1)/2,off=Math.ceil(0.7*bh)+4,len=(P.x1-P.x0+1)+2*off+4,cnt=new Int32Array(len);
+ for(const p of P.pts)cnt[Math.round(p[0]-P.x0+s*(p[1]-yc))+off]++;
+ let sc=0;for(let i=0;i<len;i++)sc+=cnt[i]*cnt[i];
+ return sc/(P.pts.length*P.pts.length);
+}
+function ledRead(P,bs){
+ const bb=P,bh=bb.y1-bb.y0+1,yc=(bb.y0+bb.y1)/2,pts=P.pts;
+ const sp=pts.map(p=>[p[0]+bs*(p[1]-yc),p[1]]);
+ const upper=sp.filter(p=>p[1]<=bb.y0+0.72*bh),lower=sp.filter(p=>p[1]>bb.y0+0.72*bh);
+ let minx=1e9,maxx=-1e9;for(const p of sp){if(p[0]<minx)minx=p[0];if(p[0]>maxx)maxx=p[0]}
+ const L=Math.ceil(maxx-minx)+3,cnt=new Int32Array(L);
+ for(const p of upper)cnt[Math.floor(p[0]-minx)]++;
+ const gap=Math.max(2,0.08*bh),runs=[];let cur=null;
+ for(let i=0;i<L;i++){if(!cnt[i])continue;
+  if(cur&&i-cur.e<=gap){cur.e=i;cur.n+=cnt[i]}else{cur={s:i,e:i,n:cnt[i]};runs.push(cur)}}
+ const g=runs.filter(r=>r.n>=Math.max(6,0.02*upper.length)).map(r=>({x0:r.s+minx,x1:r.e+minx}));
+ if(!g.length||g.length>5)return null;
+ const inRange=x=>g.some(r=>x>=r.x0-0.5&&x<=r.x1+0.5);
+ let dotAfter=-1;
+ const dots=lower.filter(p=>!inRange(p[0]));
+ if(dots.length>=3){
+  const mx=dots.reduce((a,p)=>a+p[0],0)/dots.length;
+  for(let k=0;k<g.length-1;k++)if(mx>g[k].x1&&mx<g[k+1].x0)dotAfter=k;
+ }
+ let digits='';
+ for(const r of g){
+  const dp=sp.filter(p=>p[0]>=r.x0-0.5&&p[0]<=r.x1+0.5);
+  const ch=ledGlyph(dp,r.x0,r.x1,bb.y0,bb.y1);
+  if(ch===null)return null;digits+=ch;
+ }
+ return{digits,dotAfter,cx:(bb.x0+bb.x1)/2,cy:yc,h:bh};
+}
+function ledScan(d,w,h){
+ const N=w*h,m=new Uint8Array(N),M=Math.max(w,h);
+ for(let i=0,p=0;i<N;i++,p+=4){const r=d[p],g=d[p+1],b=d[p+2];if(g>85&&g-(r>b?r:b)>30)m[i]=1}
+ const rad=Math.max(3,Math.round(M*0.007));
+ const{lab,n}=ledLabel(ledDilate(m,w,h,rad),w,h);
+ const bbs=new Array(n+1).fill(null);
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x;if(!m[i])continue;const l=lab[i];let b=bbs[l];
+  if(!b)b=bbs[l]={x0:x,x1:x,y0:y,y1:y,n:0};
+  if(x<b.x0)b.x0=x;if(x>b.x1)b.x1=x;if(y<b.y0)b.y0=y;if(y>b.y1)b.y1=y;b.n++}
+ const ids=[];
+ for(let id=1;id<=n;id++){const b=bbs[id];if(!b||b.n<40)continue;
+  const bw=b.x1-b.x0+1,bh=b.y1-b.y0+1;
+  if(bh<0.008*M||bh>0.09*M||bw/bh<0.6||bw/bh>9)continue;ids.push(id)}
+ if(ids.length<2)return{items:[],warn:''};
+ // đọc nhiều lần với ngưỡng sáng và độ nghiêng khác nhau rồi bỏ phiếu
+ const votes={},pos={};
+ for(const f of [0.8,0.88,0.95]){
+  const Ps=ids.map(id=>({id,P:ledPoints(d,w,h,lab,id,bbs[id],rad,f)})).filter(o=>o.P);
+  let bs=0,bsc=-1;
+  for(let s=-0.5;s<=0.5001;s+=0.025){let sc=0;for(const o of Ps)sc+=ledShearScore(o.P,s);if(sc>bsc){bsc=sc;bs=s}}
+  for(const o of Ps)for(const ds of [-0.05,0,0.05]){
+   const rd=ledRead(o.P,bs+ds);if(!rd)continue;
+   const key=rd.digits+'|'+rd.dotAfter;(votes[o.id]=votes[o.id]||{})[key]=(votes[o.id][key]||0)+1;
+   pos[o.id]={cx:rd.cx,cy:rd.cy,h:rd.h};
+  }
+ }
+ const disp=[];
+ for(const id of ids){
+  const v=votes[id];if(!v)continue;
+  let best=null,bc=0,tot=0;for(const k in v){tot+=v[k];if(v[k]>bc){bc=v[k];best=k}}
+  if(bc<3)continue;
+  const[digits,da]=best.split('|');disp.push({digits,dotAfter:Number(da),cx:pos[id].cx,cy:pos[id].cy,h:pos[id].h});
+ }
+ if(disp.length<2)return{items:[],warn:''};
+ disp.sort((a,b)=>a.cy-b.cy);
+ const rows=[];
+ for(const q of disp){const row=rows[rows.length-1];
+  if(row&&Math.abs(q.cy-row[0].cy)<0.6*q.h)row.push(q);else rows.push([q])}
+ rows.forEach(r=>r.sort((a,b)=>a.cx-b.cx));
+ const tank=rows.find(r=>r.length===3);
+ if(!tank)return{items:[],warn:''};
+ const refuel=rows.find(r=>r.length===2&&r[0].cy>tank[0].cy);
+ const val=(q,isTank)=>{
+  const s=q.digits;let k=q.dotAfter;
+  if(k<0)k=isTank?0:s.length-2;
+  if(k<0||k>=s.length-1)return null;
+  return Math.round(Number(s.slice(0,k+1)+'.'+s.slice(k+1))*1000);
+ };
+ const items=[];
+ const add=(q,tag,isTank)=>{const v=val(q,isTank);if(v!==null)items.push({v,tag,cx:q.cx,cy:q.cy,conf:99});return v};
+ const L=add(tank[0],'L',true),C=add(tank[1],'CTR',true),R=add(tank[2],'R',true);
+ let P=null,A=null;
+ if(refuel){P=add(refuel[0],'PRE',false);A=add(refuel[1],'ACT',false)}
+ let warn='';
+ if(A!==null&&L!==null&&C!==null&&R!==null&&Math.abs(L+C+R-A)>120)warn='Tổng ba bình ('+(L+C+R)+' kg) không khớp số ACTUAL ('+A+' kg): có thể đọc sai, hãy chụp lại hoặc kiểm tra tay.';
+ return{items,warn};
+}
+/*LED-END*/
 const SCAN={busy:false,items:[],assign:{L:null,R:null,G:null}};
 const ROLE={L:'Trái',R:'Phải',G:'Tổng'};
+const TAGN={L:'Trái',CTR:'Giữa',R:'Phải',PRE:'Cài sẵn',ACT:'Thực tế'};
 function setField(id,v){$(id).value=String(v);$(id).dispatchEvent(new Event('input',{bubbles:true}))}
 function scanMsg(t){$('scanMsg').textContent=t}
 let tessWorker=null;
@@ -221,7 +364,7 @@ function renderChips(){
  SCAN.items.forEach((it,idx)=>{
   const role=Object.keys(SCAN.assign).find(r=>SCAN.assign[r]===it)||'';
   const chip=document.createElement('div');chip.className='chip';
-  chip.innerHTML='<b>'+fmt(it.v,Number.isInteger(it.v)?0:1)+'</b>';
+  chip.innerHTML='<b>'+fmt(it.v,Number.isInteger(it.v)?0:1)+'</b>'+(it.tag?'<span class="muted">'+TAGN[it.tag]+'</span>':'');
   const sel=document.createElement('select');
   [['','—'],['L','Trái'],['R','Phải'],['G','Tổng']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;if(v===role)o.selected=true;sel.appendChild(o)});
   sel.addEventListener('change',()=>{
@@ -240,6 +383,17 @@ async function scanFile(file){
   const shot=$('shot');shot.src=URL.createObjectURL(file);shot.style.display='block';
   scanMsg('Đang xử lý ảnh…');
   const src=await fileToCanvas(file);
+  const led=ledScan(src.getContext('2d').getImageData(0,0,src.width,src.height).data,src.width,src.height);
+  const lt=t=>led.items.find(i=>i.tag===t);
+  if(lt('L')&&lt('R')){
+   SCAN.items=led.items;SCAN.assign={L:lt('L'),R:lt('R'),G:lt('PRE')||null};
+   const got=[];
+   ['L','R','G'].forEach(r=>{const it=SCAN.assign[r];if(it){setField(r,it.v);got.push(ROLE[r]+' '+fmt(it.v))}});
+   let msg='Đã đọc bảng FUEL QTY: '+got.join(' · ')+(SCAN.assign.G?' (Tổng = số PRESELECTED).':'.')+' Hãy đối chiếu với đồng hồ.';
+   if(lt('CTR')&&lt('CTR').v>0)msg+=' ⚠ Bình giữa (CTR) đang có '+fmt(lt('CTR').v)+' kg, chưa được tính vào tổng hiện có.';
+   if(led.warn)msg+=' ⚠ '+led.warn;
+   scanMsg(msg);renderChips();return;
+  }
   const w=await getWorker();
   let best=[];
   for(const inv of [false,true]){
