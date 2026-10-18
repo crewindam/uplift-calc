@@ -9,100 +9,92 @@
 <meta name="apple-mobile-web-app-title" content="Uplift Calc">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <title>Uplift Calc – by Benz</title>
 <style>
-:root{color-scheme:light dark;--bg:#eef3fb;--card:#fff;--field:#f5f8fd;--text:#0f1b33;--muted:#5d6b85;--border:#dbe3f0;--accent:#1457e6;--accent2:#00b4d8;--warn:#b54708;--good:#067647;--hero1:#0a2463;--hero2:#1478eb;--shadow:0 10px 30px rgba(15,40,100,.09)}
-@media(prefers-color-scheme:dark){:root{--bg:#0a0f1d;--card:#131b2d;--field:#0e1524;--text:#eaf0fb;--muted:#9fb0cc;--border:#26314a;--accent:#7aa7ff;--accent2:#35d0f0;--warn:#fdb022;--good:#75e0a7;--hero1:#0a2463;--hero2:#1560d6;--shadow:0 10px 30px rgba(0,0,0,.4)}}
+:root{color-scheme:light dark;--bg:#eef3fb;--card:#fff;--field:#f5f8fd;--text:#0f1b33;--muted:#5d6b85;--border:#dbe3f0;--accent:#1457e6;--accent2:#00b4d8;--warn:#b54708;--good:#067647;--hero1:#0a2463;--hero2:#1478eb;--shadow:0 6px 20px rgba(15,40,100,.08)}
+@media(prefers-color-scheme:dark){:root{--bg:#0a0f1d;--card:#131b2d;--field:#0e1524;--text:#eaf0fb;--muted:#9fb0cc;--border:#26314a;--accent:#7aa7ff;--accent2:#35d0f0;--warn:#fdb022;--good:#75e0a7;--hero1:#0a2463;--hero2:#1560d6;--shadow:0 6px 20px rgba(0,0,0,.4)}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;padding:max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom));background:radial-gradient(900px 420px at 50% -120px,color-mix(in srgb,var(--accent) 22%,transparent),transparent),var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:760px;margin:auto}
-.hero{position:relative;overflow:hidden;border-radius:24px;padding:20px 20px 22px;margin-bottom:16px;color:#fff;background:linear-gradient(135deg,var(--hero1),var(--hero2));box-shadow:0 14px 34px rgba(10,36,99,.35)}
-.hero::before{content:"";position:absolute;right:-60px;top:-70px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%)}
-.hero .plane{position:absolute;right:14px;top:10px;width:96px;height:96px;fill:#fff;opacity:.16;transform:rotate(45deg)}
-.brand{position:relative;display:flex;align-items:center;gap:14px}
-.logo{flex:none;width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);display:grid;place-items:center;backdrop-filter:blur(6px)}
-.logo svg{width:32px;height:32px}
-.hero h1{margin:0;font-size:clamp(26px,7vw,34px);line-height:1.05;letter-spacing:-.5px;font-weight:800}
-.by{display:inline-block;margin-top:6px;padding:2px 10px;border-radius:99px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);font-size:12.5px;font-weight:650;letter-spacing:.6px}
-.hero p{position:relative;margin:14px 0 0;color:rgba(255,255,255,.86);font-size:14.5px;max-width:34em}
-.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
-h2{display:flex;align-items:center;gap:10px;font-size:18px;margin:0 0 16px;letter-spacing:-.2px}
-.step{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;font-size:14px;font-weight:750}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 12px}.field{min-width:0}.field.full{grid-column:1/-1}
-label{display:block;font-size:12.5px;font-weight:650;color:var(--muted);margin-bottom:6px;letter-spacing:.2px}
-input{width:100%;padding:13px 12px;border:1.5px solid var(--border);border-radius:12px;background:var(--field);color:var(--text);font-size:18px;font-weight:550;transition:border-color .15s,box-shadow .15s,background .15s}
-input::placeholder{color:var(--muted);font-weight:400;font-size:15px;opacity:.75}
-input:focus{outline:0;border-color:var(--accent);background:var(--card);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 20%,transparent)}
-.summary{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 14px;border-radius:14px;background:var(--field);border:1px solid var(--border);border-left:5px solid var(--accent);font-size:14px;color:var(--muted)}
-.summary strong{font-size:22px;color:var(--accent);font-weight:800;white-space:nowrap}
-.results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.result{border:1px solid var(--border);background:var(--field);border-radius:16px;padding:14px}
-.result .name{font-size:12.5px;font-weight:600;color:var(--muted)}
-.result .value{font-size:clamp(20px,5vw,27px);font-weight:800;margin-top:4px;overflow-wrap:anywhere}
-.result .unit{font-size:13px;font-weight:600;color:var(--muted)}
-.results .result:first-child{grid-column:1/-1;border:0;color:#fff;background:linear-gradient(135deg,var(--hero1),var(--hero2));box-shadow:0 10px 24px rgba(20,87,230,.3);padding:18px}
-.results .result:first-child .name,.results .result:first-child .unit{color:rgba(255,255,255,.82)}
-.results .result:first-child .value{font-size:clamp(34px,10vw,46px);letter-spacing:-1px}
-.results .result:last-child:nth-child(even){grid-column:1/-1}
-.bar{height:10px;border-radius:99px;background:var(--border);overflow:hidden;margin:16px 0 6px}.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .4s}
-.row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);font-size:14.5px}.row:last-child{border-bottom:0}.row span:first-child{color:var(--muted)}.row span:last-child{text-align:right;font-weight:700}
-.warning{color:var(--warn);font-size:14px;margin-top:10px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--warn) 12%,transparent)}
-.good{color:var(--good)}.muted{color:var(--muted);font-size:13px}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-button{border:0;border-radius:12px;padding:12px 16px;font-weight:700;font-size:15px;cursor:pointer;background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;box-shadow:0 6px 16px rgba(20,87,230,.28);transition:transform .1s,opacity .15s}
-button:active{transform:scale(.97)}
-button.secondary{background:transparent;color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent)}
-button:disabled{opacity:.55;cursor:wait}
-.scan{border:1.5px dashed color-mix(in srgb,var(--accent) 55%,var(--border));background:color-mix(in srgb,var(--accent) 6%,transparent);border-radius:16px;padding:14px;margin-bottom:18px}
-.scan .t{font-weight:750;margin-bottom:10px}.scan .actions{margin-top:0}.scan input[type=file]{display:none}
-#shot{display:none;max-width:100%;max-height:180px;border-radius:12px;margin-top:12px;border:1px solid var(--border)}#scanMsg{margin-top:10px}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.chip{display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:12px;padding:6px 8px;background:var(--card)}.chip b{font-size:18px}
-.chip select{width:auto;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font-size:15px}
-footer{color:var(--muted);font-size:12px;padding:6px 4px 22px;text-align:center}footer .sig{display:block;font-size:13.5px;font-weight:750;color:var(--text);margin-bottom:6px}footer .sig b{color:var(--accent)}
-@media(max-width:480px){body{padding-left:10px;padding-right:10px}.card{padding:15px}.grid{gap:12px 10px}.results{gap:8px}.hero{padding:18px 16px 20px}.hero .plane{width:80px;height:80px}}
-@media print{body{background:#fff;color:#111;padding:0}.hero{background:#fff;color:#111;box-shadow:none;border:1px solid #ccc}.hero p,.by{color:#333;background:none;border-color:#999}.hero .plane,.hero::before,.logo{display:none}.card{box-shadow:none;break-inside:avoid}.actions,.scan{display:none}.results .result:first-child{background:#fff;color:#111;box-shadow:none;border:1px solid #999}.results .result:first-child .name,.results .result:first-child .unit{color:#444}:root{color-scheme:light;--bg:#fff;--card:#fff;--field:#fff;--text:#111;--muted:#555;--border:#ccc;--accent:#111}}
+body{margin:0;padding:max(8px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom));background:radial-gradient(800px 360px at 50% -140px,color-mix(in srgb,var(--accent) 20%,transparent),transparent),var(--bg);color:var(--text);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:600px;margin:auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 2px 8px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{flex:none;width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--hero1),var(--hero2));display:grid;place-items:center;box-shadow:0 4px 12px rgba(20,87,230,.35)}
+.logo svg{width:23px;height:23px}
+h1{margin:0;font-size:19px;line-height:1.05;letter-spacing:-.3px;font-weight:800}
+.by{display:inline-block;margin-top:3px;padding:0 8px;border-radius:99px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.5px}
+.cam{display:flex;gap:6px;flex:none}
+button{border:0;border-radius:12px;padding:10px 14px;font-weight:700;font-size:14.5px;cursor:pointer;background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;box-shadow:0 4px 12px rgba(20,87,230,.28);transition:transform .1s,opacity .15s}
+button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:wait}
+button.ghost,button.secondary{background:transparent;color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.hero{position:sticky;top:0;z-index:5;border-radius:18px;padding:12px 14px;margin-bottom:10px;color:#fff;background:linear-gradient(135deg,var(--hero1),var(--hero2));box-shadow:0 10px 26px rgba(10,36,99,.32)}
+.hero .lab{font-size:12px;font-weight:650;opacity:.85;letter-spacing:.3px}
+.hero .row1{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.big{font-size:clamp(34px,11vw,46px);font-weight:800;letter-spacing:-1.2px;line-height:1.05}.big small{font-size:16px;font-weight:650;margin-left:5px;opacity:.85;letter-spacing:0}
+.big.neg{color:#ffd1cc}
+.sub{font-size:13px;text-align:right;opacity:.92;line-height:1.35;padding-bottom:5px}
+.bar{height:7px;border-radius:99px;background:rgba(255,255,255,.22);overflow:hidden;margin:8px 0 5px}.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#7fe6ff,#fff);transition:width .4s}
+.hint{font-size:12.5px;opacity:.92}.hint:empty{display:none}
+.warns:empty{display:none}.warns{margin-top:7px}.warns p{margin:5px 0 0;padding:6px 9px;border-radius:10px;background:rgba(255,200,120,.22);font-size:12.5px;line-height:1.35}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:var(--shadow)}
+.scanrow{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+#shot{display:none;flex:none;width:46px;height:46px;object-fit:cover;border-radius:10px;border:1px solid var(--border)}
+#scanMsg{font-size:12.5px;color:var(--muted);line-height:1.35}
+#chipsBox{display:none;margin:-2px 0 10px}#chipsBox[data-on="1"]{display:block}
+#chipsBox summary,.more summary{cursor:pointer;font-weight:650;font-size:13px;color:var(--accent);list-style:none}
+#chipsBox summary::-webkit-details-marker,.more summary::-webkit-details-marker{display:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.chip{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:10px;padding:4px 7px;background:var(--field)}.chip b{font-size:15px}.chip .muted{font-size:11px}
+.chip select{width:auto;padding:3px;border:1px solid var(--border);border-radius:7px;background:var(--card);color:var(--text);font-size:13px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.field{min-width:0}
+label{display:block;font-size:11.5px;font-weight:650;color:var(--muted);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+input{width:100%;padding:10px 8px;border:1.5px solid var(--border);border-radius:11px;background:var(--field);color:var(--text);font-size:17px;font-weight:600;transition:border-color .15s,box-shadow .15s}
+input::placeholder{color:var(--muted);font-weight:400;font-size:13px;opacity:.7}
+input:focus{outline:0;border-color:var(--accent);background:var(--card);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent)}
+.helper{margin:8px 0 0;font-size:11.5px;color:var(--muted);line-height:1.35}
+.more{padding:10px 12px}.more summary{display:flex;gap:8px;align-items:center}.more summary::after{content:"▾";color:var(--muted)}.more[open] summary::after{content:"▴"}
+#d15sum{color:var(--muted);font-weight:600;font-size:12.5px;margin-left:auto}
+.row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13.5px}.row:last-child{border-bottom:0}.row span:first-child{color:var(--muted)}.row span:last-child{text-align:right;font-weight:700}
+.good{color:var(--good)}.warning{color:var(--warn)}.muted{color:var(--muted)}
+.actions{display:flex;gap:8px;margin:2px 0 8px}.actions button{flex:1}
+input[type=file]{display:none}
+footer{color:var(--muted);font-size:11.5px;text-align:center;padding:0 4px 14px}footer .sig{font-size:12.5px;font-weight:750;color:var(--text)}footer .sig b{color:var(--accent)}
+footer details{margin-top:4px}footer summary{cursor:pointer;color:var(--muted)}footer p{margin:6px 0 0;line-height:1.4}
+@media(max-width:360px){.g3{gap:6px}input{font-size:16px;padding:9px 6px}}
+@media print{body{background:#fff;color:#111;padding:0}.cam,.actions,.scanrow,#chipsBox{display:none!important}.hero{position:static;background:#fff;color:#111;box-shadow:none;border:1px solid #999}.bar{background:#ddd}.bar i{background:#333}.warns p{background:#fff3e0}.card{box-shadow:none;break-inside:avoid}:root{color-scheme:light;--card:#fff;--field:#fff;--text:#111;--muted:#555;--border:#ccc;--accent:#111}}
 </style>
 </head>
 <body>
 <main>
-<header class="hero">
-<svg class="plane" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
-<div class="brand">
-<div class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2C12 2.2 4.8 9.9 4.8 15a7.2 7.2 0 0014.4 0C19.2 9.9 12 2.2 12 2.2z" fill="#fff"/><path d="M12 19v-6.2m0 0l-2.7 2.7m2.7-2.7l2.7 2.7" fill="none" stroke="#1457e6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-<div><h1>Uplift Calc</h1><span class="by">by Benz</span></div>
-</div>
-<p>Tính khối lượng dầu cần nạp, quy đổi thể tích và đối chiếu khối lượng riêng tại 15°C.</p>
+<header class="top">
+<div class="brand"><div class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2C12 2.2 4.8 9.9 4.8 15a7.2 7.2 0 0014.4 0C19.2 9.9 12 2.2 12 2.2z" fill="#fff"/><path d="M12 19v-6.2m0 0l-2.7 2.7m2.7-2.7l2.7 2.7" fill="none" stroke="#1457e6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><h1>Uplift Calc</h1><span class="by">by Benz</span></div></div>
+<div class="cam"><button type="button" id="camBtn" aria-label="Chụp ảnh đồng hồ">📷 Chụp</button><button type="button" id="picBtn" class="ghost" aria-label="Chọn ảnh từ máy">🖼</button></div>
 </header>
-<section class="card">
-<h2><span class="step">1</span>Nhập thông số</h2>
-<div class="scan">
-<div class="t">📷 Chụp đồng hồ tàu bay để tự điền</div>
-<div class="actions"><button type="button" id="camBtn">📷 Chụp ảnh</button><button type="button" id="picBtn" class="secondary">🖼 Chọn ảnh</button></div>
 <input id="camIn" type="file" accept="image/*" capture="environment"><input id="picIn" type="file" accept="image/*">
-<img id="shot" alt="Ảnh đồng hồ vừa chụp">
-<div id="scanMsg" class="muted">Chụp thẳng, đủ sáng, thấy rõ cả ô LEFT / CTR / RIGHT và PRESELECTED. Bảng đèn LED xanh được đọc ngay trên máy, không cần mạng. Loại đồng hồ khác sẽ dùng bộ nhận dạng chữ (lần đầu cần mạng).</div>
-<div id="chips" class="chips"></div>
-</div>
-<div class="grid">
-<div class="field"><label for="L">Cánh trái (kg)</label><input id="L" type="number" min="0" step="any" inputmode="decimal" placeholder="Nhập kg"></div>
-<div class="field"><label for="R">Cánh phải (kg)</label><input id="R" type="number" min="0" step="any" inputmode="decimal" placeholder="Nhập kg"></div>
-<div class="field full"><div class="summary">Tổng hiện có ở hai cánh: <strong id="sum">— kg</strong></div></div>
-<div class="field full"><label for="G">Tổng khối lượng sau khi cài (kg)</label><input id="G" type="number" min="0" step="any" inputmode="decimal" placeholder="Nhập tổng mục tiêu"></div>
-<div class="field"><label for="D">Tỉ trọng hiện tại (kg/L)</label><input id="D" type="number" min="0.0001" step="0.0001" value="0.8000" inputmode="decimal"></div>
-<div class="field"><label for="C">Nhiệt độ nhiên liệu (°C)</label><input id="C" type="number" step="0.1" inputmode="decimal" placeholder="Ví dụ: 30"></div>
-<div class="field full"><label for="K">KLR ghi trên Chứng nhận xuất hàng bể chứa tại 15°C (kg/m³) — tùy chọn</label><input id="K" type="number" step="0.1" inputmode="decimal" placeholder="Ví dụ: 811.0"></div>
-</div>
-<div class="actions"><button type="button" id="reset" class="secondary">Xóa số liệu tính</button><button type="button" id="print">In kết quả</button></div>
-<p class="muted">Tỉ trọng, nhiệt độ và KLR trên Chứng nhận xuất hàng bể chứa được lưu trên thiết bị này để tiện sử dụng lần sau.</p>
+<section class="hero">
+<div class="lab">KHỐI LƯỢNG CẦN NẠP</div>
+<div class="row1"><div class="big" id="bigBox"><span id="need">—</span><small>kg</small></div><div class="sub" id="sub"></div></div>
+<div class="bar"><i id="bar"></i></div>
+<div class="hint">Hiện có <b id="sum">— kg</b> <span id="barTxt"></span></div>
+<div id="message" class="hint"></div>
+<div id="warns" class="warns"></div>
 </section>
 <section class="card">
-<h2><span class="step">2</span>Kết quả tính toán</h2>
-<div id="message" class="muted">Nhập cánh trái, cánh phải và tổng mục tiêu để xem kết quả.</div>
-<div id="out"></div>
+<div class="scanrow"><img id="shot" alt="Ảnh đồng hồ"><div id="scanMsg">Bấm 📷 Chụp để đọc bảng FUEL QTY và tự điền cánh trái, cánh phải, tổng cài.</div></div>
+<details id="chipsBox"><summary>Số đọc được (đổi vai trò nếu sai)</summary><div id="chips" class="chips"></div></details>
+<div class="g3">
+<div class="field"><label for="L">Cánh trái (kg)</label><input id="L" type="number" min="0" step="any" inputmode="decimal" placeholder="kg"></div>
+<div class="field"><label for="R">Cánh phải (kg)</label><input id="R" type="number" min="0" step="any" inputmode="decimal" placeholder="kg"></div>
+<div class="field"><label for="G">Tổng cài (kg)</label><input id="G" type="number" min="0" step="any" inputmode="decimal" placeholder="kg"></div>
+<div class="field"><label for="D">Tỉ trọng (kg/L)</label><input id="D" type="number" min="0.0001" step="0.0001" value="0.8000" inputmode="decimal"></div>
+<div class="field"><label for="C">Nhiệt độ (°C)</label><input id="C" type="number" step="0.1" inputmode="decimal" placeholder="°C"></div>
+<div class="field"><label for="K" title="KLR ghi trên Chứng nhận xuất hàng bể chứa tại 15°C">KLR (kg/m³)</label><input id="K" type="number" step="0.1" inputmode="decimal" placeholder="tùy chọn"></div>
+</div>
+<p class="helper" id="keepNote">KLR ghi trên Chứng nhận xuất hàng bể chứa (tùy chọn). Tỉ trọng, nhiệt độ, KLR tự lưu cho lần sau.</p>
 </section>
-<footer><span class="sig">✈ Uplift Calc · by <b>Benz</b></span>Chỉ dùng để tham khảo và hỗ trợ tính toán. Luôn đối chiếu đồng hồ xe tra nạp, chứng từ giao nhận và quy trình vận hành được phê duyệt. Kết quả quy đổi d15 áp dụng công thức Bảng 53B được tích hợp trong công cụ; cần xác minh theo quy trình/tiêu chuẩn hiện hành trước khi sử dụng nghiệp vụ.</footer>
+<details class="card more"><summary>Chi tiết quy đổi 15°C <span id="d15sum"></span></summary><div id="out"></div></details>
+<div class="actions"><button type="button" id="reset" class="secondary">Xóa số liệu tính</button><button type="button" id="print">In kết quả</button></div>
+<footer><span class="sig">✈ Uplift Calc · by <b>Benz</b></span><details><summary>Lưu ý khi sử dụng</summary><p>Chỉ dùng để tham khảo và hỗ trợ tính toán. Luôn đối chiếu đồng hồ xe tra nạp, chứng từ giao nhận và quy trình vận hành được phê duyệt. Kết quả quy đổi d15 áp dụng công thức Bảng 53B được tích hợp trong công cụ; cần xác minh theo quy trình/tiêu chuẩn hiện hành trước khi sử dụng nghiệp vụ.</p></details></footer>
 </main>
 <script>
 const $=id=>document.getElementById(id);
@@ -116,31 +108,56 @@ function calc(){
  const cur=(hasL?Number(L):0)+(hasR?Number(R):0);
  $('sum').textContent=(hasL||hasR)?fmt(cur)+' kg':'— kg';
  if(!hasL||!hasR||G===''||!(d>0)){
-  $('message').textContent='Vui lòng nhập cánh trái, cánh phải, tổng mục tiêu và tỉ trọng hợp lệ.';
-  $('out').innerHTML='';return;
+  $('need').textContent='—';$('bigBox').classList.remove('neg');$('sub').textContent='';$('bar').style.width='0';$('barTxt').textContent='';
+  $('warns').innerHTML='';$('out').innerHTML='';$('d15sum').textContent='';
+  $('message').textContent='Nhập cánh trái, cánh phải, tổng cài và tỉ trọng để xem kết quả.';return;
  }
  const target=Number(G),need=target-cur,lit=need/d,gal=lit/3.785411784;
  let d15=d*1000;
  if(temp!=='')d15=t53b(d*1000,Number(temp));
  const lit15=need/(d15/1000),ok=d15>=775&&d15<=840;
- let html='<div class="results">'+result('Khối lượng cần nạp',fmt(need),'kg')+result('Thể tích theo tỉ trọng nhập',fmt(lit),'L')+result('US gallon',fmt(gal),'gal')+result('Khối lượng hiện có',fmt(cur),'kg')+'</div>';
+ const diff=K!==''?d15-Number(K):null;
+ $('need').textContent=fmt(need);$('bigBox').classList.toggle('neg',need<0);
+ $('sub').innerHTML=fmt(lit)+' L<br>'+fmt(gal)+' US gal';
  const pct=target>0?Math.max(0,Math.min(100,cur/target*100)):0;
- html+='<div class="bar"><i style="width:'+pct.toFixed(1)+'%"></i></div><div class="muted">Hiện có '+fmt(pct,0)+'% so với tổng mục tiêu</div>';
- html+='<div style="margin-top:12px"><div class="row"><span>d15 theo Bảng 53B</span><span>'+(temp!==''?fmt(d15,1)+' kg/m³':'Nhập nhiệt độ để quy đổi')+'</span></div>';
- if(temp!=='')html+='<div class="row"><span>Đối chiếu d15 với dải 775,0–840,0 kg/m³</span><span class="'+(ok?'good':'warning')+'">'+(ok?'Trong dải':'Ngoài dải')+'</span></div>';
- if(K!==''){const diff=d15-Number(K);html+='<div class="row"><span>d15 − KLR trên Chứng nhận xuất hàng bể chứa</span><span class="'+(Math.abs(diff)>3?'warning':'good')+'">'+(diff>0?'+':'')+fmt(diff,1)+' kg/m³ '+(Math.abs(diff)>3?'⚠ Lệch quá 3':'✓ Trong 3')+'</span></div>'}
- if(temp!==''){html+='<div class="row"><span>Thể tích quy đổi tại 15°C</span><span>'+fmt(lit15)+' L</span></div><div class="row"><span>US gallon tại 15°C</span><span>'+fmt(lit15/3.785411784)+' gal</span></div>'}
- html+='</div>';
- if(need<0)html+='<p class="warning">⚠ Tổng mục tiêu thấp hơn khối lượng hiện có. Cần kiểm tra lại số liệu cài đặt.</p>';
- if(K!==''&&Math.abs(d15-Number(K))>3)html+='<p class="warning">⚠ d15 lệch KLR ghi trên Chứng nhận xuất hàng bể chứa quá 3 kg/m³. Kiểm tra tỉ trọng, nhiệt độ và chứng từ.</p>';
- if(temp!==''&&(d15<653||d15>1075||Number(temp)<-18||Number(temp)>90))html+='<p class="warning">⚠ Ngoài dải áp dụng nêu trong công thức Bảng 53B; kết quả d15 có thể không đáng tin cậy.</p>';
- $('message').textContent='Kết quả được cập nhật tự động khi thay đổi số liệu.';
- $('out').innerHTML=html;
+ $('bar').style.width=pct.toFixed(1)+'%';
+ $('barTxt').textContent='· '+fmt(pct,0)+'% so với tổng cài '+fmt(target)+' kg';
+ $('message').textContent='';
+ let w='';
+ if(need<0)w+='<p>⚠ Tổng cài thấp hơn khối lượng hiện có. Kiểm tra lại số liệu cài đặt.</p>';
+ if(diff!==null&&Math.abs(diff)>3)w+='<p>⚠ d15 lệch KLR trên Chứng nhận xuất hàng bể chứa '+(diff>0?'+':'')+fmt(diff,1)+' kg/m³ (quá 3). Kiểm tra tỉ trọng, nhiệt độ và chứng từ.</p>';
+ if(temp!==''&&(d15<653||d15>1075||Number(temp)<-18||Number(temp)>90))w+='<p>⚠ Ngoài dải áp dụng của công thức Bảng 53B; d15 có thể không đáng tin cậy.</p>';
+ $('warns').innerHTML=w;
+ let h='<div class="row"><span>d15 theo Bảng 53B</span><span>'+(temp!==''?fmt(d15,1)+' kg/m³':'Nhập nhiệt độ để quy đổi')+'</span></div>';
+ if(temp!=='')h+='<div class="row"><span>Đối chiếu dải 775,0–840,0 kg/m³</span><span class="'+(ok?'good':'warning')+'">'+(ok?'Trong dải':'Ngoài dải')+'</span></div>';
+ if(diff!==null)h+='<div class="row"><span>d15 − KLR trên Chứng nhận xuất hàng bể chứa</span><span class="'+(Math.abs(diff)>3?'warning':'good')+'">'+(diff>0?'+':'')+fmt(diff,1)+' kg/m³ '+(Math.abs(diff)>3?'⚠ Lệch quá 3':'✓ Trong 3')+'</span></div>';
+ h+='<div class="row"><span>Thể tích theo tỉ trọng nhập</span><span>'+fmt(lit)+' L · '+fmt(gal)+' gal</span></div>';
+ if(temp!=='')h+='<div class="row"><span>Thể tích quy đổi tại 15°C</span><span>'+fmt(lit15)+' L · '+fmt(lit15/3.785411784)+' gal</span></div>';
+ h+='<div class="row"><span>Khối lượng hiện có</span><span>'+fmt(cur)+' kg</span></div>';
+ $('out').innerHTML=h;
+ $('d15sum').textContent=temp!==''?'d15 '+fmt(d15,1)+' '+(((diff!==null&&Math.abs(diff)>3)||!ok)?'⚠':'✓'):'';
 }
-['D','C','K'].forEach(id=>{try{const v=localStorage.getItem('fuelapp.'+id);if(v!==null)$(id).value=v}catch(e){}});
-['L','R','G','D','C','K'].forEach(id=>$(id).addEventListener('input',()=>{if(['D','C','K'].includes(id)){try{localStorage.setItem('fuelapp.'+id,$(id).value)}catch(e){}}calc()}));
+
+const KEEP=['D','C','K'],had={};
+function idb(op,key,val){return new Promise(ok=>{try{const r=indexedDB.open('uplift-calc',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onerror=()=>ok(null);r.onsuccess=()=>{try{const t=r.result.transaction('kv',op==='get'?'readonly':'readwrite'),st=t.objectStore('kv'),q=op==='get'?st.get(key):st.put(val,key);q.onsuccess=()=>ok(q.result);q.onerror=()=>ok(null)}catch(e){ok(null)}}}catch(e){ok(null)}})}
+function keepSave(){
+ const o={};KEEP.forEach(id=>o[id]=$(id).value);
+ KEEP.forEach(id=>{try{localStorage.setItem('fuelapp.'+id,o[id])}catch(e){}});
+ idb('put','keep',JSON.stringify(o));
+ const n=$('keepNote');if(n)n.textContent='✓ Đã lưu tỉ trọng, nhiệt độ và KLR trên thiết bị này cho lần sau.';
+}
+KEEP.forEach(id=>{try{const v=localStorage.getItem('fuelapp.'+id);if(v!==null){$(id).value=v;had[id]=true}}catch(e){}});
+idb('get','keep').then(v=>{try{if(!v)return;const o=JSON.parse(v);let ch=false;KEEP.forEach(id=>{if(!had[id]&&o[id]){$(id).value=o[id];ch=true}});if(ch)calc()}catch(e){}});
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+['L','R','G','D','C','K'].forEach(id=>{
+ $(id).addEventListener('input',()=>{if(KEEP.includes(id))keepSave();calc()});
+ $(id).addEventListener('change',()=>{if(KEEP.includes(id))keepSave()});
+});
+addEventListener('pagehide',keepSave);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')keepSave()});
 $('reset').addEventListener('click',()=>{['L','R','G'].forEach(id=>$(id).value='');calc()});
 $('print').addEventListener('click',()=>window.print());
+addEventListener('beforeprint',()=>document.querySelectorAll('details').forEach(x=>{x.open=true}));
 calc();
 
 /*SCAN-PURE-START*/
@@ -208,8 +225,10 @@ function ledGlyph(pts,gx0,gx1,y0,y1){
   let c=0;for(const p of pts)if(p[0]>=X0&&p[0]<=X1&&p[1]>=Y0&&p[1]<=Y1)c++;
   fill[s]=c/Math.max(1,(X1-X0)*(Y1-Y0));if(fill[s]>mx)mx=fill[s];
  }
- const thr=Math.max(0.1,0.5*mx);let on='';
+ const thr=Math.max(0.05,0.5*mx);let on='';
  for(const s of 'abcdefg')if(fill[s]>=thr)on+=s;
+ {let sm=0,cn=0;for(const q of on)if(q!=='g'){sm+=fill[q];cn++}
+  if(on.includes('g')&&cn>=4&&fill.g<0.7*(sm/cn))on=on.replace('g','');}
  let best=null,bd=9;
  for(const k in LED_SEG){let d=0;for(const s of 'abcdefg')if((k.includes(s))!==(on.includes(s)))d++;if(d<bd){bd=d;best=k}}
  return bd<=1?LED_SEG[best]:null;
@@ -226,8 +245,12 @@ function ledPoints(d,w,h,lab,id,b0,r,f){
  if(pts.length<20)return null;
  const rc=new Int32Array(h);for(const p of pts)rc[p[1]]++;
  let rm=0;for(let y=y0;y<=y1;y++)if(rc[y]>rm)rm=rc[y];
- const ok=(y)=>{for(let k=0;k<4;k++)if(rc[y+k]<0.2*rm)return false;return true};
- let ry0=y0,ry1=y1;while(ry0<y1-4&&!ok(ry0))ry0++;while(ry1>ry0+4&&!ok(ry1-3))ry1--;
+ let ry0=y0,ry1=y1;
+ {let bestS=-1,bestA=y0,bestB=y1,cs=0,ca=-1,lastOn=-1;
+  for(let y=y0;y<=y1;y++){
+   if(rc[y]>=0.06*rm){if(ca<0||y-lastOn>3){ca=y;cs=0}cs+=rc[y];lastOn=y;if(cs>bestS){bestS=cs;bestA=ca;bestB=y}}
+  }
+  ry0=bestA;ry1=bestB;}
  return{pts:pts.filter(p=>p[1]>=ry0&&p[1]<=ry1),x0,x1,y0:ry0,y1:ry1};
 }
 function ledShearScore(P,s){
@@ -243,7 +266,7 @@ function ledRead(P,bs){
  let minx=1e9,maxx=-1e9;for(const p of sp){if(p[0]<minx)minx=p[0];if(p[0]>maxx)maxx=p[0]}
  const L=Math.ceil(maxx-minx)+3,cnt=new Int32Array(L);
  for(const p of upper)cnt[Math.floor(p[0]-minx)]++;
- const gap=Math.max(2,0.08*bh),runs=[];let cur=null;
+ const gap=Math.max(2,0.18*bh),runs=[];let cur=null;
  for(let i=0;i<L;i++){if(!cnt[i])continue;
   if(cur&&i-cur.e<=gap){cur.e=i;cur.n+=cnt[i]}else{cur={s:i,e:i,n:cnt[i]};runs.push(cur)}}
  const g=runs.filter(r=>r.n>=Math.max(6,0.02*upper.length)).map(r=>({x0:r.s+minx,x1:r.e+minx}));
@@ -268,10 +291,22 @@ function ledScan(d,w,h){
  for(let i=0,p=0;i<N;i++,p+=4){const r=d[p],g=d[p+1],b=d[p+2];if(g>85&&g-(r>b?r:b)>30)m[i]=1}
  const rad=Math.max(3,Math.round(M*0.007));
  const{lab,n}=ledLabel(ledDilate(m,w,h,rad),w,h);
- const bbs=new Array(n+1).fill(null);
- for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x;if(!m[i])continue;const l=lab[i];let b=bbs[l];
-  if(!b)b=bbs[l]={x0:x,x1:x,y0:y,y1:y,n:0};
-  if(x<b.x0)b.x0=x;if(x>b.x1)b.x1=x;if(y<b.y0)b.y0=y;if(y>b.y1)b.y1=y;b.n++}
+ const bbox=(L)=>{const B=new Array(n+1).fill(null);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x;if(!m[i])continue;const l=L[i];let b=B[l];
+   if(!b)b=B[l]={x0:x,x1:x,y0:y,y1:y,n:0};
+   if(x<b.x0)b.x0=x;if(x>b.x1)b.x1=x;if(y<b.y0)b.y0=y;if(y>b.y1)b.y1=y;b.n++}
+  return B};
+ let bbs=bbox(lab);
+ // gộp các cụm nằm cùng hàng và sát nhau theo chiều ngang (các chữ số của cùng một ô)
+ const par=Array.from({length:n+1},(_,i)=>i),fd=a=>{while(par[a]!==a){par[a]=par[par[a]];a=par[a]}return a};
+ for(let a=1;a<=n;a++){const A=bbs[a];if(!A||A.n<15)continue;
+  for(let c=a+1;c<=n;c++){const B=bbs[c];if(!B||B.n<15)continue;
+   const ha=A.y1-A.y0+1,hb=B.y1-B.y0+1,ov=Math.min(A.y1,B.y1)-Math.max(A.y0,B.y0)+1;
+   if(ov<0.6*Math.min(ha,hb))continue;
+   const gx=Math.max(A.x0,B.x0)-Math.min(A.x1,B.x1)-1;
+   if(gx<=0.7*Math.max(ha,hb)&&Math.max(ha,hb)>=0.008*M&&Math.max(ha,hb)<=0.09*M)par[fd(c)]=fd(a)}}
+ for(let i=0;i<N;i++)if(lab[i])lab[i]=fd(lab[i]);
+ bbs=bbox(lab);
  const ids=[];
  for(let id=1;id<=n;id++){const b=bbs[id];if(!b||b.n<40)continue;
   const bw=b.x1-b.x0+1,bh=b.y1-b.y0+1;
@@ -279,7 +314,7 @@ function ledScan(d,w,h){
  if(ids.length<2)return{items:[],warn:''};
  // đọc nhiều lần với ngưỡng sáng và độ nghiêng khác nhau rồi bỏ phiếu
  const votes={},pos={};
- for(const f of [0.8,0.88,0.95]){
+ for(const f of [0.65,0.75,0.85]){
   const Ps=ids.map(id=>({id,P:ledPoints(d,w,h,lab,id,bbs[id],rad,f)})).filter(o=>o.P);
   let bs=0,bsc=-1;
   for(let s=-0.5;s<=0.5001;s+=0.025){let sc=0;for(const o of Ps)sc+=ledShearScore(o.P,s);if(sc>bsc){bsc=sc;bs=s}}
@@ -317,7 +352,16 @@ function ledScan(d,w,h){
  let P=null,A=null;
  if(refuel){P=add(refuel[0],'PRE',false);A=add(refuel[1],'ACT',false)}
  let warn='';
- if(A!==null&&L!==null&&C!==null&&R!==null&&Math.abs(L+C+R-A)>120)warn='Tổng ba bình ('+(L+C+R)+' kg) không khớp số ACTUAL ('+A+' kg): có thể đọc sai, hãy chụp lại hoặc kiểm tra tay.';
+ if(A!==null&&L!==null&&R!==null){
+  const implied=A-L-R;
+  if(Math.abs(implied)<=120){
+   const ci=items.findIndex(i=>i.tag==='CTR');
+   if(ci>=0)items[ci].v=0;else items.push({v:0,tag:'CTR',cx:0,cy:0,conf:50});
+  }else{
+   const ci=items.findIndex(i=>i.tag==='CTR');if(ci>=0)items.splice(ci,1);
+   warn='Số ACTUAL ('+A+' kg) lệch tổng hai cánh ('+(L+R)+' kg) khoảng '+implied+' kg: bình giữa (CTR) có thể có nhiên liệu hoặc có số đọc sai, hãy kiểm tra trên đồng hồ.';
+  }
+ }
  return{items,warn};
 }
 /*LED-END*/
@@ -360,7 +404,7 @@ function prep(src,invert){
  x.putImageData(im,0,0);return c;
 }
 function renderChips(){
- const box=$('chips');box.innerHTML='';
+ const box=$('chips');box.innerHTML='';$('chipsBox').dataset.on=SCAN.items.length?'1':'';
  SCAN.items.forEach((it,idx)=>{
   const role=Object.keys(SCAN.assign).find(r=>SCAN.assign[r]===it)||'';
   const chip=document.createElement('div');chip.className='chip';
@@ -378,7 +422,7 @@ function renderChips(){
 async function scanFile(file){
  if(!file||SCAN.busy)return;
  SCAN.busy=true;['camBtn','picBtn'].forEach(id=>$(id).disabled=true);
- $('chips').innerHTML='';
+ $('chips').innerHTML='';$('chipsBox').dataset.on='';
  try{
   const shot=$('shot');shot.src=URL.createObjectURL(file);shot.style.display='block';
   scanMsg('Đang xử lý ảnh…');
@@ -389,7 +433,7 @@ async function scanFile(file){
    SCAN.items=led.items;SCAN.assign={L:lt('L'),R:lt('R'),G:lt('PRE')||null};
    const got=[];
    ['L','R','G'].forEach(r=>{const it=SCAN.assign[r];if(it){setField(r,it.v);got.push(ROLE[r]+' '+fmt(it.v))}});
-   let msg='Đã đọc bảng FUEL QTY: '+got.join(' · ')+(SCAN.assign.G?' (Tổng = số PRESELECTED).':'.')+' Hãy đối chiếu với đồng hồ.';
+   let msg='✓ Đã đọc: '+got.join(' · ')+(SCAN.assign.G?' (tổng cài = PRESELECTED).':'.')+' Hãy đối chiếu với đồng hồ.';
    if(lt('CTR')&&lt('CTR').v>0)msg+=' ⚠ Bình giữa (CTR) đang có '+fmt(lt('CTR').v)+' kg, chưa được tính vào tổng hiện có.';
    if(led.warn)msg+=' ⚠ '+led.warn;
    scanMsg(msg);renderChips();return;
