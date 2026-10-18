@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a2463">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Uplift Calc">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Uplift Calc – by Benz</title>
+<style>
+:root{color-scheme:light dark;--bg:#eef3fb;--card:#fff;--field:#f5f8fd;--text:#0f1b33;--muted:#5d6b85;--border:#dbe3f0;--accent:#1457e6;--accent2:#00b4d8;--warn:#b54708;--good:#067647;--hero1:#0a2463;--hero2:#1478eb;--shadow:0 6px 20px rgba(15,40,100,.08)}
+@media(prefers-color-scheme:dark){:root{--bg:#0a0f1d;--card:#131b2d;--field:#0e1524;--text:#eaf0fb;--muted:#9fb0cc;--border:#26314a;--accent:#7aa7ff;--accent2:#35d0f0;--warn:#fdb022;--good:#75e0a7;--hero1:#0a2463;--hero2:#1560d6;--shadow:0 6px 20px rgba(0,0,0,.4)}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;padding:max(8px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom));background:radial-gradient(800px 360px at 50% -140px,color-mix(in srgb,var(--accent) 20%,transparent),transparent),var(--bg);color:var(--text);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:600px;margin:auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 2px 8px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{flex:none;width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--hero1),var(--hero2));display:grid;place-items:center;box-shadow:0 4px 12px rgba(20,87,230,.35)}
+.logo svg{width:23px;height:23px}
+h1{margin:0;font-size:19px;line-height:1.05;letter-spacing:-.3px;font-weight:800}
+.by{display:inline-block;margin-top:3px;padding:0 8px;border-radius:99px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.5px}
+.cam{display:flex;gap:6px;flex:none}
+button{border:0;border-radius:12px;padding:10px 14px;font-weight:700;font-size:14.5px;cursor:pointer;background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;box-shadow:0 4px 12px rgba(20,87,230,.28);transition:transform .1s,opacity .15s}
+button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:wait}
+button.ghost,button.secondary{background:transparent;color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.hero{position:sticky;top:0;z-index:5;border-radius:18px;padding:12px 14px;margin-bottom:10px;color:#fff;background:linear-gradient(135deg,var(--hero1),var(--hero2));box-shadow:0 10px 26px rgba(10,36,99,.32)}
+.hero .lab{font-size:12px;font-weight:650;opacity:.85;letter-spacing:.3px}
+.hero .row1{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.big{font-size:clamp(34px,11vw,46px);font-weight:800;letter-spacing:-1.2px;line-height:1.05}.big small{font-size:16px;font-weight:650;margin-left:5px;opacity:.85;letter-spacing:0}
+.big.neg{color:#ffd1cc}
+.sub{font-size:13px;text-align:right;opacity:.92;line-height:1.35;padding-bottom:5px}
+.bar{height:7px;border-radius:99px;background:rgba(255,255,255,.22);overflow:hidden;margin:8px 0 5px}.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#7fe6ff,#fff);transition:width .4s}
+.hint{font-size:12.5px;opacity:.92}.hint:empty{display:none}
+.warns:empty{display:none}.warns{margin-top:7px}.warns p{margin:5px 0 0;padding:6px 9px;border-radius:10px;background:rgba(255,200,120,.22);font-size:12.5px;line-height:1.35}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:var(--shadow)}
+.scanrow{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+#shot{display:none;flex:none;width:46px;height:46px;object-fit:cover;border-radius:10px;border:1px solid var(--border)}
+#scanMsg{font-size:12.5px;color:var(--muted);line-height:1.35}
+#chipsBox{display:none;margin:-2px 0 10px}#chipsBox[data-on="1"]{display:block}
+#chipsBox summary,.more summary{cursor:pointer;font-weight:650;font-size:13px;color:var(--accent);list-style:none}
+#chipsBox summary::-webkit-details-marker,.more summary::-webkit-details-marker{display:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.chip{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:10px;padding:4px 7px;background:var(--field)}.chip b{font-size:15px}.chip .muted{font-size:11px}
+.chip select{width:auto;padding:3px;border:1px solid var(--border);border-radius:7px;background:var(--card);color:var(--text);font-size:13px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.field{min-width:0}
+label{display:block;font-size:11.5px;font-weight:650;color:var(--muted);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+input{width:100%;padding:10px 8px;border:1.5px solid var(--border);border-radius:11px;background:var(--field);color:var(--text);font-size:17px;font-weight:600;transition:border-color .15s,box-shadow .15s}
+input::placeholder{color:var(--muted);font-weight:400;font-size:13px;opacity:.7}
+input:focus{outline:0;border-color:var(--accent);background:var(--card);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent)}
+.helper{margin:8px 0 0;font-size:11.5px;color:var(--muted);line-height:1.35}
+.more{padding:10px 12px}.more summary{display:flex;gap:8px;align-items:center}.more summary::after{content:"▾";color:var(--muted)}.more[open] summary::after{content:"▴"}
+#d15sum{color:var(--muted);font-weight:600;font-size:12.5px;margin-left:auto}
+.row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13.5px}.row:last-child{border-bottom:0}.row span:first-child{color:var(--muted)}.row span:last-child{text-align:right;font-weight:700}
+.good{color:var(--good)}.warning{color:var(--warn)}.muted{color:var(--muted)}
+.actions{display:flex;gap:8px;margin:2px 0 8px}.actions button{flex:1}
+input[type=file]{display:none}
+footer{color:var(--muted);font-size:11.5px;text-align:center;padding:0 4px 14px}footer .sig{font-size:12.5px;font-weight:750;color:var(--text)}footer .sig b{color:var(--accent)}
+footer details{margin-top:4px}footer summary{cursor:pointer;color:var(--muted)}footer p{margin:6px 0 0;line-height:1.4}
+@media(max-width:360px){.g3{gap:6px}input{font-size:16px;padding:9px 6px}}
+@media print{body{background:#fff;color:#111;padding:0}.cam,.actions,.scanrow,#chipsBox{display:none!important}.hero{position:static;background:#fff;color:#111;box-shadow:none;border:1px solid #999}.bar{background:#ddd}.bar i{background:#333}.warns p{background:#fff3e0}.card{box-shadow:none;break-inside:avoid}:root{color-scheme:light;--card:#fff;--field:#fff;--text:#111;--muted:#555;--border:#ccc;--accent:#111}}
+</style>
+</head>
+<body>
+<main>
+<header class="top">
+<div class="brand"><div class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2C12 2.2 4.8 9.9 4.8 15a7.2 7.2 0 0014.4 0C19.2 9.9 12 2.2 12 2.2z" fill="#fff"/><path d="M12 19v-6.2m0 0l-2.7 2.7m2.7-2.7l2.7 2.7" fill="none" stroke="#1457e6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><h1>Uplift Calc</h1><span class="by">by Benz</span></div></div>
+<div class="cam"><button type="button" id="camBtn" aria-label="Chụp ảnh đồng hồ">📷 Chụp</button><button type="button" id="picBtn" class="ghost" aria-label="Chọn ảnh từ máy">🖼</button></div>
+</header>
+<input id="camIn" type="file" accept="image/*" capture="environment"><input id="picIn" type="file" accept="image/*">
+<section class="hero">
+<div class="lab">KHỐI LƯỢNG CẦN NẠP</div>
+<div class="row1"><div class="big" id="bigBox"><span id="need">—</span><small>kg</small></div><div class="sub" id="sub"></div></div>
+<div class="bar"><i id="bar"></i></div>
+<div class="hint">Hiện có <b id="sum">— kg</b> <span id="barTxt"></span></div>
+<div id="message" class="hint"></div>
+<div id="warns" class="warns"></div>
+</section>
+<section class="card">
+<div class="scanrow"><img id="shot" alt="Ảnh đồng hồ"><div id="scanMsg">Bấm 📷 Chụp để đọc bảng FUEL QTY và tự điền cánh trái, cánh phải, tổng cài.</div></div>
+<details id="chipsBox"><summary>Số đọc được (đổi vai trò nếu sai)</summary><div id="chips" class="chips"></div></details>
+<div class="g3">
+<div class="field"><label for="L">Cánh trái (kg)</label><input id="L" type="number" min="0" step="any" inputmode="decimal" placeholder="kg"></div>
+<div class="field"><label for="R">Cánh phải (kg)</label><input id="R" type="number" min="0" step="any" inputmode="decimal" placeholder="kg"></div>
+<div class="field"><label for="G">Tổng cài (kg)</label><input id="G" type="number" min="0" step="any" inputmode="decimal" placeholder="kg"></div>
+<div class="field"><label for="D">Tỉ trọng (kg/L)</label><input id="D" type="number" min="0.0001" step="0.0001" value="0.8000" inputmode="decimal"></div>
+<div class="field"><label for="C">Nhiệt độ (°C)</label><input id="C" type="number" step="0.1" inputmode="decimal" placeholder="°C"></div>
+<div class="field"><label for="K" title="KLR ghi trên Chứng nhận xuất hàng bể chứa tại 15°C">KLR (kg/m³)</label><input id="K" type="number" step="0.1" inputmode="decimal" placeholder="tùy chọn"></div>
+</div>
+<p class="helper" id="keepNote">KLR ghi trên Chứng nhận xuất hàng bể chứa (tùy chọn). Tỉ trọng, nhiệt độ, KLR tự lưu cho lần sau.</p>
+</section>
+<details class="card more"><summary>Chi tiết quy đổi 15°C <span id="d15sum"></span></summary><div id="out"></div></details>
+<div class="actions"><button type="button" id="reset" class="secondary">Xóa số liệu tính</button><button type="button" id="print">In kết quả</button></div>
+<footer><span class="sig">✈ Uplift Calc · by <b>Benz</b></span><details><summary>Lưu ý khi sử dụng</summary><p>Chỉ dùng để tham khảo và hỗ trợ tính toán. Luôn đối chiếu đồng hồ xe tra nạp, chứng từ giao nhận và quy trình vận hành được phê duyệt. Kết quả quy đổi d15 áp dụng công thức Bảng 53B được tích hợp trong công cụ; cần xác minh theo quy trình/tiêu chuẩn hiện hành trước khi sử dụng nghiệp vụ.</p></details></footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const fmt=(v,d=0)=>Number.isFinite(v)?v.toLocaleString('vi-VN',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
+function k53(r){if(r>=838.3127)return[186.9696,0.4862,0];if(r>=787.5)return[594.5418,0,0];if(r>=770.352)return[2680.3206,0,-0.00336312];return[346.4228,0.4388,0]}
+function t53b(ro,t){let r=ro;for(let i=0;i<100;i++){const[a,b,c]=k53(r),al=a/(r*r)+b/r+c,dt=t-15,v=Math.exp(-al*dt*(1+0.8*al*dt)),n=ro/v;const done=Math.abs(n-r)<1e-7;r=n;if(done)break}return Math.round(r*10)/10}
+function result(label,value,unit=''){return `<div class="result"><div class="name">${label}</div><div class="value">${value} <span class="unit">${unit}</span></div></div>`}
+function calc(){
+ const L=$('L').value,R=$('R').value,G=$('G').value,d=Number($('D').value),temp=$('C').value,K=$('K').value;
+ const hasL=L!==''&&Number.isFinite(Number(L)),hasR=R!==''&&Number.isFinite(Number(R));
+ const cur=(hasL?Number(L):0)+(hasR?Number(R):0);
+ $('sum').textContent=(hasL||hasR)?fmt(cur)+' kg':'— kg';
+ if(!hasL||!hasR||G===''||!(d>0)){
+  $('need').textContent='—';$('bigBox').classList.remove('neg');$('sub').textContent='';$('bar').style.width='0';$('barTxt').textContent='';
+  $('warns').innerHTML='';$('out').innerHTML='';$('d15sum').textContent='';
+  $('message').textContent='Nhập cánh trái, cánh phải, tổng cài và tỉ trọng để xem kết quả.';return;
+ }
+ const target=Number(G),need=target-cur,lit=need/d,gal=lit/3.785411784;
+ let d15=d*1000;
+ if(temp!=='')d15=t53b(d*1000,Number(temp));
+ const lit15=need/(d15/1000),ok=d15>=775&&d15<=840;
+ const diff=K!==''?d15-Number(K):null;
+ $('need').textContent=fmt(need);$('bigBox').classList.toggle('neg',need<0);
+ $('sub').innerHTML=fmt(lit)+' L<br>'+fmt(gal)+' US gal';
+ const pct=target>0?Math.max(0,Math.min(100,cur/target*100)):0;
+ $('bar').style.width=pct.toFixed(1)+'%';
+ $('barTxt').textContent='· '+fmt(pct,0)+'% so với tổng cài '+fmt(target)+' kg';
+ $('message').textContent='';
+ let w='';
+ if(need<0)w+='<p>⚠ Tổng cài thấp hơn khối lượng hiện có. Kiểm tra lại số liệu cài đặt.</p>';
+ if(diff!==null&&Math.abs(diff)>3)w+='<p>⚠ d15 lệch KLR trên Chứng nhận xuất hàng bể chứa '+(diff>0?'+':'')+fmt(diff,1)+' kg/m³ (quá 3). Kiểm tra tỉ trọng, nhiệt độ và chứng từ.</p>';
+ if(temp!==''&&(d15<653||d15>1075||Number(temp)<-18||Number(temp)>90))w+='<p>⚠ Ngoài dải áp dụng của công thức Bảng 53B; d15 có thể không đáng tin cậy.</p>';
+ $('warns').innerHTML=w;
+ let h='<div class="row"><span>d15 theo Bảng 53B</span><span>'+(temp!==''?fmt(d15,1)+' kg/m³':'Nhập nhiệt độ để quy đổi')+'</span></div>';
+ if(temp!=='')h+='<div class="row"><span>Đối chiếu dải 775,0–840,0 kg/m³</span><span class="'+(ok?'good':'warning')+'">'+(ok?'Trong dải':'Ngoài dải')+'</span></div>';
+ if(diff!==null)h+='<div class="row"><span>d15 − KLR trên Chứng nhận xuất hàng bể chứa</span><span class="'+(Math.abs(diff)>3?'warning':'good')+'">'+(diff>0?'+':'')+fmt(diff,1)+' kg/m³ '+(Math.abs(diff)>3?'⚠ Lệch quá 3':'✓ Trong 3')+'</span></div>';
+ h+='<div class="row"><span>Thể tích theo tỉ trọng nhập</span><span>'+fmt(lit)+' L · '+fmt(gal)+' gal</span></div>';
+ if(temp!=='')h+='<div class="row"><span>Thể tích quy đổi tại 15°C</span><span>'+fmt(lit15)+' L · '+fmt(lit15/3.785411784)+' gal</span></div>';
+ h+='<div class="row"><span>Khối lượng hiện có</span><span>'+fmt(cur)+' kg</span></div>';
+ $('out').innerHTML=h;
+ $('d15sum').textContent=temp!==''?'d15 '+fmt(d15,1)+' '+(((diff!==null&&Math.abs(diff)>3)||!ok)?'⚠':'✓'):'';
+}
+
+const KEEP=['D','C','K'],had={};
+function idb(op,key,val){return new Promise(ok=>{try{const r=indexedDB.open('uplift-calc',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onerror=()=>ok(null);r.onsuccess=()=>{try{const t=r.result.transaction('kv',op==='get'?'readonly':'readwrite'),st=t.objectStore('kv'),q=op==='get'?st.get(key):st.put(val,key);q.onsuccess=()=>ok(q.result);q.onerror=()=>ok(null)}catch(e){ok(null)}}}catch(e){ok(null)}})}
+function keepSave(){
+ const o={};KEEP.forEach(id=>o[id]=$(id).value);
+ KEEP.forEach(id=>{try{localStorage.setItem('fuelapp.'+id,o[id])}catch(e){}});
+ idb('put','keep',JSON.stringify(o));
+ const n=$('keepNote');if(n)n.textContent='✓ Đã lưu tỉ trọng, nhiệt độ và KLR trên thiết bị này cho lần sau.';
+}
+KEEP.forEach(id=>{try{const v=localStorage.getItem('fuelapp.'+id);if(v!==null){$(id).value=v;had[id]=true}}catch(e){}});
+idb('get','keep').then(v=>{try{if(!v)return;const o=JSON.parse(v);let ch=false;KEEP.forEach(id=>{if(!had[id]&&o[id]){$(id).value=o[id];ch=true}});if(ch)calc()}catch(e){}});
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+['L','R','G','D','C','K'].forEach(id=>{
+ $(id).addEventListener('input',()=>{if(KEEP.includes(id))keepSave();calc()});
+ $(id).addEventListener('change',()=>{if(KEEP.includes(id))keepSave()});
+});
+addEventListener('pagehide',keepSave);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')keepSave()});
+$('reset').addEventListener('click',()=>{['L','R','G'].forEach(id=>$(id).value='');calc()});
+$('print').addEventListener('click',()=>window.print());
+addEventListener('beforeprint',()=>document.querySelectorAll('details').forEach(x=>{x.open=true}));
+calc();
+
+/*SCAN-PURE-START*/
+function parseReading(t){
+ const raw=String(t).trim();
+ if((raw.match(/\d/g)||[]).length<2)return null;
+ let x=raw.replace(/[^0-9.,]/g,'').replace(/^[.,]+|[.,]+$/g,'');
+ if(/^\d{1,3}([.,]\d{3})+$/.test(x))x=x.replace(/[.,]/g,'');
+ else if(/^\d+[.,]\d+$/.test(x))x=x.replace(',','.');
+ else if(!/^\d+$/.test(x))return null;
+ let v=Number(x);
+ if(/[.]/.test(x)&&v<100)v=Math.round(v*1000);
+ return(Number.isFinite(v)&&v>=10&&v<=200000)?v:null;
+}
+function toItems(words){
+ const out=[];
+ (words||[]).forEach(w=>{const v=parseReading(w.text);if(v===null||!w.bbox)return;
+  out.push({v,cx:(w.bbox.x0+w.bbox.x1)/2,cy:(w.bbox.y0+w.bbox.y1)/2,conf:w.confidence||0})});
+ return out.sort((a,b)=>b.conf-a.conf).slice(0,8);
+}
+function assignReadings(items,imgW){
+ const out={L:null,R:null,G:null};
+ const pos=(a,b)=>Math.abs(a.cx-b.cx)>imgW*0.12?a.cx-b.cx:a.cy-b.cy;
+ const pair=(a,b)=>pos(a,b)<=0?[a,b]:[b,a];
+ if(items.length>=3){
+  let best=null;
+  for(let i=0;i<items.length;i++)for(let j=i+1;j<items.length;j++)for(let k=0;k<items.length;k++){
+   if(k===i||k===j)continue;
+   const t=items[k],err=Math.abs(items[i].v+items[j].v-t.v);
+   if(err<=Math.max(2,0.01*t.v)&&(!best||err<best.err))best={a:items[i],b:items[j],t,err};
+  }
+  if(best){const[l,r]=pair(best.a,best.b);out.L=l;out.R=r;out.G=best.t;return out}
+  const top=items.slice(0,3).sort((a,b)=>b.v-a.v);
+  out.G=top[0];const[l,r]=pair(top[1],top[2]);out.L=l;out.R=r;return out;
+ }
+ if(items.length===2){const[l,r]=pair(items[0],items[1]);out.L=l;out.R=r}
+ return out;
+}
+/*SCAN-PURE-END*/
+/*LED-START*/
+function ledDilate(m,w,h,r){
+ const t=new Uint8Array(w*h),o=new Uint8Array(w*h),pre=new Int32Array(Math.max(w,h)+1);
+ for(let y=0;y<w*h;y+=w){pre[0]=0;for(let x=0;x<w;x++)pre[x+1]=pre[x]+m[y+x];
+  for(let x=0;x<w;x++){const a=Math.max(0,x-r),b=Math.min(w,x+r+1);t[y+x]=pre[b]-pre[a]>0?1:0}}
+ for(let x=0;x<w;x++){pre[0]=0;for(let y=0;y<h;y++)pre[y+1]=pre[y]+t[y*w+x];
+  for(let y=0;y<h;y++){const a=Math.max(0,y-r),b=Math.min(h,y+r+1);o[y*w+x]=pre[b]-pre[a]>0?1:0}}
+ return o;
+}
+function ledLabel(b,w,h){
+ const lab=new Int32Array(w*h),st=[];let n=0;
+ for(let i=0;i<w*h;i++){if(!b[i]||lab[i])continue;n++;lab[i]=n;st.push(i);
+  while(st.length){const j=st.pop(),x=j%w,y=(j-x)/w;
+   for(let dy=-1;dy<=1;dy++){const yy=y+dy;if(yy<0||yy>=h)continue;
+    for(let dx=-1;dx<=1;dx++){const xx=x+dx;if(xx<0||xx>=w)continue;const k=yy*w+xx;if(b[k]&&!lab[k]){lab[k]=n;st.push(k)}}}}}
+ return{lab,n};
+}
+const LED_SEG={abcdef:'0',bc:'1',abdeg:'2',abcdg:'3',bcfg:'4',acdfg:'5',acdefg:'6',abc:'7',abcdefg:'8',abcdfg:'9'};
+const LED_RECT={a:[.12,.88,0,.22],g:[.12,.88,.39,.61],d:[.12,.88,.78,1],f:[0,.32,.08,.52],b:[.68,1,.08,.52],e:[0,.32,.48,.92],c:[.68,1,.48,.92]};
+function ledGlyph(pts,gx0,gx1,y0,y1){
+ const w=gx1-gx0+1,h=y1-y0+1;
+ if(w<0.4*h)return '1';
+ const fill={};let mx=0;
+ for(const s in LED_RECT){
+  const[ax,bx,ay,by]=LED_RECT[s],X0=gx0+ax*w,X1=gx0+bx*w,Y0=y0+ay*h,Y1=y0+by*h;
+  let c=0;for(const p of pts)if(p[0]>=X0&&p[0]<=X1&&p[1]>=Y0&&p[1]<=Y1)c++;
+  fill[s]=c/Math.max(1,(X1-X0)*(Y1-Y0));if(fill[s]>mx)mx=fill[s];
+ }
+ const thr=Math.max(0.05,0.5*mx);let on='';
+ for(const s of 'abcdefg')if(fill[s]>=thr)on+=s;
+ {let sm=0,cn=0;for(const q of on)if(q!=='g'){sm+=fill[q];cn++}
+  if(on.includes('g')&&cn>=4&&fill.g<0.7*(sm/cn))on=on.replace('g','');}
+ let best=null,bd=9;
+ for(const k in LED_SEG){let d=0;for(const s of 'abcdefg')if((k.includes(s))!==(on.includes(s)))d++;if(d<bd){bd=d;best=k}}
+ return bd<=1?LED_SEG[best]:null;
+}
+function ledPoints(d,w,h,lab,id,b0,r,f){
+ const pix=[],gs=[];
+ for(let y=Math.max(0,b0.y0-r);y<=Math.min(h-1,b0.y1+r);y++)for(let x=Math.max(0,b0.x0-r);x<=Math.min(w-1,b0.x1+r);x++){
+  const i=y*w+x;if(lab[i]===id){pix.push(i);gs.push(d[i*4+1])}}
+ gs.sort((p,q)=>p-q);
+ const T=f*gs[Math.floor(gs.length*0.99)];
+ const pts=[];let x0=1e9,x1=-1,y0=1e9,y1=-1;
+ for(const i of pix){if(d[i*4+1]<T)continue;const x=i%w,y=(i-x)/w;pts.push([x,y]);
+  if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+ if(pts.length<20)return null;
+ const rc=new Int32Array(h);for(const p of pts)rc[p[1]]++;
+ let rm=0;for(let y=y0;y<=y1;y++)if(rc[y]>rm)rm=rc[y];
+ let ry0=y0,ry1=y1;
+ {let bestS=-1,bestA=y0,bestB=y1,cs=0,ca=-1,lastOn=-1;
+  for(let y=y0;y<=y1;y++){
+   if(rc[y]>=0.06*rm){if(ca<0||y-lastOn>3){ca=y;cs=0}cs+=rc[y];lastOn=y;if(cs>bestS){bestS=cs;bestA=ca;bestB=y}}
+  }
+  ry0=bestA;ry1=bestB;}
+ return{pts:pts.filter(p=>p[1]>=ry0&&p[1]<=ry1),x0,x1,y0:ry0,y1:ry1};
+}
+function ledShearScore(P,s){
+ const bh=P.y1-P.y0+1,yc=(P.y0+P.y1)/2,off=Math.ceil(0.7*bh)+4,len=(P.x1-P.x0+1)+2*off+4,cnt=new Int32Array(len);
+ for(const p of P.pts)cnt[Math.round(p[0]-P.x0+s*(p[1]-yc))+off]++;
+ let sc=0;for(let i=0;i<len;i++)sc+=cnt[i]*cnt[i];
+ return sc/(P.pts.length*P.pts.length);
+}
+function ledRead(P,bs){
+ const bb=P,bh=bb.y1-bb.y0+1,yc=(bb.y0+bb.y1)/2,pts=P.pts;
+ const sp=pts.map(p=>[p[0]+bs*(p[1]-yc),p[1]]);
+ const upper=sp.filter(p=>p[1]<=bb.y0+0.72*bh),lower=sp.filter(p=>p[1]>bb.y0+0.72*bh);
+ let minx=1e9,maxx=-1e9;for(const p of sp){if(p[0]<minx)minx=p[0];if(p[0]>maxx)maxx=p[0]}
+ const L=Math.ceil(maxx-minx)+3,cnt=new Int32Array(L);
+ for(const p of upper)cnt[Math.floor(p[0]-minx)]++;
+ const gap=Math.max(2,0.18*bh),runs=[];let cur=null;
+ for(let i=0;i<L;i++){if(!cnt[i])continue;
+  if(cur&&i-cur.e<=gap){cur.e=i;cur.n+=cnt[i]}else{cur={s:i,e:i,n:cnt[i]};runs.push(cur)}}
+ const g=runs.filter(r=>r.n>=Math.max(6,0.02*upper.length)).map(r=>({x0:r.s+minx,x1:r.e+minx}));
+ if(!g.length||g.length>5)return null;
+ const inRange=x=>g.some(r=>x>=r.x0-0.5&&x<=r.x1+0.5);
+ let dotAfter=-1;
+ const dots=lower.filter(p=>!inRange(p[0]));
+ if(dots.length>=3){
+  const mx=dots.reduce((a,p)=>a+p[0],0)/dots.length;
+  for(let k=0;k<g.length-1;k++)if(mx>g[k].x1&&mx<g[k+1].x0)dotAfter=k;
+ }
+ let digits='';
+ for(const r of g){
+  const dp=sp.filter(p=>p[0]>=r.x0-0.5&&p[0]<=r.x1+0.5);
+  const ch=ledGlyph(dp,r.x0,r.x1,bb.y0,bb.y1);
+  if(ch===null)return null;digits+=ch;
+ }
+ return{digits,dotAfter,cx:(bb.x0+bb.x1)/2,cy:yc,h:bh};
+}
+function ledScan(d,w,h){
+ const N=w*h,m=new Uint8Array(N),M=Math.max(w,h);
+ for(let i=0,p=0;i<N;i++,p+=4){const r=d[p],g=d[p+1],b=d[p+2];if(g>85&&g-(r>b?r:b)>30)m[i]=1}
+ const rad=Math.max(3,Math.round(M*0.007));
+ const{lab,n}=ledLabel(ledDilate(m,w,h,rad),w,h);
+ const bbox=(L)=>{const B=new Array(n+1).fill(null);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x;if(!m[i])continue;const l=L[i];let b=B[l];
+   if(!b)b=B[l]={x0:x,x1:x,y0:y,y1:y,n:0};
+   if(x<b.x0)b.x0=x;if(x>b.x1)b.x1=x;if(y<b.y0)b.y0=y;if(y>b.y1)b.y1=y;b.n++}
+  return B};
+ let bbs=bbox(lab);
+ // gộp các cụm nằm cùng hàng và sát nhau theo chiều ngang (các chữ số của cùng một ô)
+ const par=Array.from({length:n+1},(_,i)=>i),fd=a=>{while(par[a]!==a){par[a]=par[par[a]];a=par[a]}return a};
+ for(let a=1;a<=n;a++){const A=bbs[a];if(!A||A.n<15)continue;
+  for(let c=a+1;c<=n;c++){const B=bbs[c];if(!B||B.n<15)continue;
+   const ha=A.y1-A.y0+1,hb=B.y1-B.y0+1,ov=Math.min(A.y1,B.y1)-Math.max(A.y0,B.y0)+1;
+   if(ov<0.6*Math.min(ha,hb))continue;
+   const gx=Math.max(A.x0,B.x0)-Math.min(A.x1,B.x1)-1;
+   if(gx<=0.7*Math.max(ha,hb)&&Math.max(ha,hb)>=0.008*M&&Math.max(ha,hb)<=0.09*M)par[fd(c)]=fd(a)}}
+ for(let i=0;i<N;i++)if(lab[i])lab[i]=fd(lab[i]);
+ bbs=bbox(lab);
+ const ids=[];
+ for(let id=1;id<=n;id++){const b=bbs[id];if(!b||b.n<40)continue;
+  const bw=b.x1-b.x0+1,bh=b.y1-b.y0+1;
+  if(bh<0.008*M||bh>0.09*M||bw/bh<0.6||bw/bh>9)continue;ids.push(id)}
+ if(ids.length<2)return{items:[],warn:''};
+ // đọc nhiều lần với ngưỡng sáng và độ nghiêng khác nhau rồi bỏ phiếu
+ const votes={},pos={};
+ for(const f of [0.65,0.75,0.85]){
+  const Ps=ids.map(id=>({id,P:ledPoints(d,w,h,lab,id,bbs[id],rad,f)})).filter(o=>o.P);
+  let bs=0,bsc=-1;
+  for(let s=-0.5;s<=0.5001;s+=0.025){let sc=0;for(const o of Ps)sc+=ledShearScore(o.P,s);if(sc>bsc){bsc=sc;bs=s}}
+  for(const o of Ps)for(const ds of [-0.05,0,0.05]){
+   const rd=ledRead(o.P,bs+ds);if(!rd)continue;
+   const key=rd.digits+'|'+rd.dotAfter;(votes[o.id]=votes[o.id]||{})[key]=(votes[o.id][key]||0)+1;
+   pos[o.id]={cx:rd.cx,cy:rd.cy,h:rd.h};
+  }
+ }
+ const disp=[];
+ for(const id of ids){
+  const v=votes[id];if(!v)continue;
+  let best=null,bc=0,tot=0;for(const k in v){tot+=v[k];if(v[k]>bc){bc=v[k];best=k}}
+  if(bc<3)continue;
+  const[digits,da]=best.split('|');disp.push({digits,dotAfter:Number(da),cx:pos[id].cx,cy:pos[id].cy,h:pos[id].h});
+ }
+ if(disp.length<2)return{items:[],warn:''};
+ disp.sort((a,b)=>a.cy-b.cy);
+ const rows=[];
+ for(const q of disp){const row=rows[rows.length-1];
+  if(row&&Math.abs(q.cy-row[0].cy)<0.6*q.h)row.push(q);else rows.push([q])}
+ rows.forEach(r=>r.sort((a,b)=>a.cx-b.cx));
+ const tank=rows.find(r=>r.length===3);
+ if(!tank)return{items:[],warn:''};
+ const refuel=rows.find(r=>r.length===2&&r[0].cy>tank[0].cy);
+ const val=(q,isTank)=>{
+  const s=q.digits;let k=q.dotAfter;
+  if(k<0)k=isTank?0:s.length-2;
+  if(k<0||k>=s.length-1)return null;
+  return Math.round(Number(s.slice(0,k+1)+'.'+s.slice(k+1))*1000);
+ };
+ const items=[];
+ const add=(q,tag,isTank)=>{const v=val(q,isTank);if(v!==null)items.push({v,tag,cx:q.cx,cy:q.cy,conf:99});return v};
+ const L=add(tank[0],'L',true),C=add(tank[1],'CTR',true),R=add(tank[2],'R',true);
+ let P=null,A=null;
+ if(refuel){P=add(refuel[0],'PRE',false);A=add(refuel[1],'ACT',false)}
+ let warn='';
+ if(A!==null&&L!==null&&R!==null){
+  const implied=A-L-R;
+  if(Math.abs(implied)<=120){
+   const ci=items.findIndex(i=>i.tag==='CTR');
+   if(ci>=0)items[ci].v=0;else items.push({v:0,tag:'CTR',cx:0,cy:0,conf:50});
+  }else{
+   const ci=items.findIndex(i=>i.tag==='CTR');if(ci>=0)items.splice(ci,1);
+   warn='Số ACTUAL ('+A+' kg) lệch tổng hai cánh ('+(L+R)+' kg) khoảng '+implied+' kg: bình giữa (CTR) có thể có nhiên liệu hoặc có số đọc sai, hãy kiểm tra trên đồng hồ.';
+  }
+ }
+ return{items,warn};
+}
+/*LED-END*/
+const SCAN={busy:false,items:[],assign:{L:null,R:null,G:null}};
+const ROLE={L:'Trái',R:'Phải',G:'Tổng'};
+const TAGN={L:'Trái',CTR:'Giữa',R:'Phải',PRE:'Cài sẵn',ACT:'Thực tế'};
+function setField(id,v){$(id).value=String(v);$(id).dispatchEvent(new Event('input',{bubbles:true}))}
+function scanMsg(t){$('scanMsg').textContent=t}
+let tessWorker=null;
+function loadTess(){
+ if(window.Tesseract)return Promise.resolve();
+ return new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';s.onload=ok;s.onerror=()=>no(new Error('load'));document.head.appendChild(s)});
+}
+async function getWorker(){
+ if(tessWorker)return tessWorker;
+ scanMsg('Đang tải bộ nhận dạng số (lần đầu cần mạng)…');
+ await loadTess();
+ const w=await Tesseract.createWorker('eng',1,{logger:m=>{if(m.status==='recognizing text'&&typeof m.progress==='number')scanMsg('Đang đọc số… '+Math.round(m.progress*100)+'%')}});
+ await w.setParameters({tessedit_char_whitelist:'0123456789.,',tessedit_pageseg_mode:Tesseract.PSM.SPARSE_TEXT});
+ tessWorker=w;return w;
+}
+async function fileToCanvas(file){
+ let bmp;
+ try{bmp=await createImageBitmap(file,{imageOrientation:'from-image'})}
+ catch(e){bmp=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=URL.createObjectURL(file)})}
+ const w0=bmp.width||bmp.naturalWidth,h0=bmp.height||bmp.naturalHeight,sc=Math.min(1,1800/Math.max(w0,h0));
+ const c=document.createElement('canvas');c.width=Math.round(w0*sc);c.height=Math.round(h0*sc);
+ c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);return c;
+}
+function prep(src,invert){
+ const c=document.createElement('canvas');c.width=src.width;c.height=src.height;
+ const x=c.getContext('2d');x.drawImage(src,0,0);
+ const im=x.getImageData(0,0,c.width,c.height),d=im.data,n=c.width*c.height,hist=new Uint32Array(256);
+ for(let i=0;i<n;i++){const g=(d[i*4]*0.299+d[i*4+1]*0.587+d[i*4+2]*0.114)|0;d[i*4]=g;hist[g]++}
+ let lo=0,hi=255,a=0;
+ while(lo<255&&(a+=hist[lo])<n*0.02)lo++;a=0;while(hi>0&&(a+=hist[hi])<n*0.02)hi--;
+ if(hi-lo<30){lo=0;hi=255}
+ const k=255/(hi-lo);
+ for(let i=0;i<n;i++){let g=(d[i*4]-lo)*k;g=g<0?0:g>255?255:g;if(invert)g=255-g;d[i*4]=d[i*4+1]=d[i*4+2]=g;d[i*4+3]=255}
+ x.putImageData(im,0,0);return c;
+}
+function renderChips(){
+ const box=$('chips');box.innerHTML='';$('chipsBox').dataset.on=SCAN.items.length?'1':'';
+ SCAN.items.forEach((it,idx)=>{
+  const role=Object.keys(SCAN.assign).find(r=>SCAN.assign[r]===it)||'';
+  const chip=document.createElement('div');chip.className='chip';
+  chip.innerHTML='<b>'+fmt(it.v,Number.isInteger(it.v)?0:1)+'</b>'+(it.tag?'<span class="muted">'+TAGN[it.tag]+'</span>':'');
+  const sel=document.createElement('select');
+  [['','—'],['L','Trái'],['R','Phải'],['G','Tổng']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;if(v===role)o.selected=true;sel.appendChild(o)});
+  sel.addEventListener('change',()=>{
+   Object.keys(SCAN.assign).forEach(r=>{if(SCAN.assign[r]===it)SCAN.assign[r]=null});
+   if(sel.value){SCAN.assign[sel.value]=it;setField(sel.value,it.v)}
+   renderChips();
+  });
+  chip.appendChild(sel);box.appendChild(chip);
+ });
+}
+async function scanFile(file){
+ if(!file||SCAN.busy)return;
+ SCAN.busy=true;['camBtn','picBtn'].forEach(id=>$(id).disabled=true);
+ $('chips').innerHTML='';$('chipsBox').dataset.on='';
+ try{
+  const shot=$('shot');shot.src=URL.createObjectURL(file);shot.style.display='block';
+  scanMsg('Đang xử lý ảnh…');
+  const src=await fileToCanvas(file);
+  const led=ledScan(src.getContext('2d').getImageData(0,0,src.width,src.height).data,src.width,src.height);
+  const lt=t=>led.items.find(i=>i.tag===t);
+  if(lt('L')&&lt('R')){
+   SCAN.items=led.items;SCAN.assign={L:lt('L'),R:lt('R'),G:lt('PRE')||null};
+   const got=[];
+   ['L','R','G'].forEach(r=>{const it=SCAN.assign[r];if(it){setField(r,it.v);got.push(ROLE[r]+' '+fmt(it.v))}});
+   let msg='✓ Đã đọc: '+got.join(' · ')+(SCAN.assign.G?' (tổng cài = PRESELECTED).':'.')+' Hãy đối chiếu với đồng hồ.';
+   if(lt('CTR')&&lt('CTR').v>0)msg+=' ⚠ Bình giữa (CTR) đang có '+fmt(lt('CTR').v)+' kg, chưa được tính vào tổng hiện có.';
+   if(led.warn)msg+=' ⚠ '+led.warn;
+   scanMsg(msg);renderChips();return;
+  }
+  const w=await getWorker();
+  let best=[];
+  for(const inv of [false,true]){
+   const r=await w.recognize(prep(src,inv));
+   const items=toItems(r.data&&r.data.words);
+   if(items.length>best.length)best=items;
+   if(best.length>=3)break;
+  }
+  SCAN.items=best;SCAN.assign=assignReadings(best,src.width);
+  if(!best.length){scanMsg('Không đọc được số nào. Hãy chụp gần hơn, đủ sáng, tránh lóa rồi thử lại, hoặc nhập tay.');return}
+  const got=[];
+  ['L','R','G'].forEach(r=>{const it=SCAN.assign[r];if(it){setField(r,it.v);got.push(ROLE[r]+' '+fmt(it.v,Number.isInteger(it.v)?0:1))}});
+  scanMsg((got.length?'Đã điền: '+got.join(' · ')+'. ':'')+'Hãy đối chiếu với đồng hồ; nếu sai, đổi vai trò từng số bên dưới.');
+  renderChips();
+ }catch(e){
+  scanMsg('Chưa quét được (có thể do chưa có mạng ở lần đầu hoặc ảnh lỗi). Bạn vẫn có thể nhập tay.');
+ }finally{SCAN.busy=false;['camBtn','picBtn'].forEach(id=>$(id).disabled=false)}
+}
+$('camBtn').addEventListener('click',()=>$('camIn').click());
+$('picBtn').addEventListener('click',()=>$('picIn').click());
+['camIn','picIn'].forEach(id=>$(id).addEventListener('change',e=>{scanFile(e.target.files[0]);e.target.value=''}));
+</script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+</script>
+</body>
+</html>
