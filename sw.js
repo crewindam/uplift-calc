@@ -1,4 +1,4 @@
-const CACHE = 'uplift-calc-v5';
+const CACHE = 'uplift-calc-v6';
 const ASSETS = [
   './',
   './index.html',
